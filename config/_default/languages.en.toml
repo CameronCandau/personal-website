@@ -1,0 +1,28 @@
+disabled = false
+languageCode = "en"
+languageName = "English"
+weight = 1
+title = "Cameron Candau"
+
+[params]
+displayName = "EN"
+isoCode = "en"
+rtl = false
+dateFormat = "2 January 2006"
+
+[[params.author.links]]
+email = "mailto:hello@cameroncandau.com"
+
+[[params.author.links]]
+github = "https://github.com/CameronCandau"
+
+[[params.author.links]]
+linkedin = "https://www.linkedin.com/in/cameron-candau/"
+
+[[params.author.links]]
+lock = "https://ctf.cameroncandau.com"
+
+["params.author"]
+name = "Cameron Candau"
+bio = ""
+headline = "Infrastructure Security Engineer"
