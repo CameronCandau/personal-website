@@ -15,6 +15,10 @@
 #  pageRef = "posts"
 #  weight = 10
 
+[[main]]
+name = "Homelab"
+pageRef = "Homelab"
+
 #[[main]]
 #  name = "Parent"
 #  weight = 20
