@@ -19,9 +19,6 @@ github = "https://github.com/CameronCandau"
 [[params.author.links]]
 linkedin = "https://www.linkedin.com/in/cameron-candau/"
 
-[[params.author.links]]
-lock = "https://ctf.cameroncandau.com"
-
 ["params.author"]
 name = "Cameron Candau"
 bio = ""

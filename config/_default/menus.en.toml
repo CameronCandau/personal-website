@@ -19,6 +19,14 @@
 name = "Homelab"
 pageRef = "Homelab"
 
+[[main]]
+name = "About"
+pageRef = "About"
+
+[[main]]
+name = "CTF"
+pageRef = "CTF"
+
 #[[main]]
 #  name = "Parent"
 #  weight = 20
