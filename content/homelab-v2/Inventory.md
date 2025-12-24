@@ -1,5 +1,4 @@
 ---
-title: Inventory
 showDate: true
 showReadingTime: false
 showWordCount: false
@@ -28,19 +27,4 @@ date: 2025-12-24
 | jellyfin | 192.168.100.22 | 2 | 6GB | 20G | 150G | 4 | production |
 | nextcloud | 192.168.100.20 | 2 | 4GB | 20G | 100G | 4 | production |
 | uptime-kuma | 192.168.100.90 | 1 | 1GB | 10G | - | 5 | monitoring |
-
-## Services
-
-### Infrastructure
-
-- **DNS** (192.168.100.53) - BIND9 with DNS-over-TLS
-- **Traefik** (192.168.100.80) - Reverse proxy, TLS termination, Let's Encrypt
-- **Tailscale** (192.168.100.100) - Subnet router for remote access
-- **Uptime Kuma** (192.168.100.90) - Service monitoring dashboard
-
-### Core Services
-
-- **Nextcloud** (192.168.100.20) - File sync, calendar, contacts
-- **Immich** (192.168.100.21) - Photo management
-- **Jellyfin** (192.168.100.22) - Media server
 
