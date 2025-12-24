@@ -3,7 +3,7 @@ title: Infrastructure Architecture
 date: 2025-12-14
 draft: false
 series: ["Homelab v2"]
-series_order: 0
+series_order: 1
 showHero: true
 heroStyle: "background"
 ---

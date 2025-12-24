@@ -1,9 +1,9 @@
 ---
-title: Declarative Infrastructure with OpenTofu/Terraform and Ansible
+title: Implementing Declarative Infrastructure with Terraform and Ansible
 date: 2025-12-24
 series:
   - Homelab v2
-series_order: 1
+series_order: 2
 showHero: true
 heroStyle: background
 ---
@@ -14,7 +14,7 @@ Part 1 covered the architectural decisions. This post covers the actual implemen
 I'm using [OpenTofu](https://opentofu.org/) for infrastructure provisioning (VMs, disks, networking) and [Ansible](https://docs.ansible.com/projects/ansible/latest/index.html#) for configuration management (packages, services, Docker containers).
 
 
-*OpenTofu is an open-source fork of Terraform. I lean towards open-source whenever possible, and all the basic functionality is compatible with Terraform anyways.
+*OpenTofu is an open-source fork of Terraform. I lean towards open-source whenever possible, and all the basic functionality is compatible with Terraform anyways.*
 
 # Cloud-Init Templates
 

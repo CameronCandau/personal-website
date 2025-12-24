@@ -1,11 +1,12 @@
 ---
 title: Lab Retrospective
-date: 2025-07-18
+date: 2025-12-01
 draft: false
-series: ["Homelab v1"]
+series:
+  - Homelab v1
 series_order: 0
 showHero: true
-heroStyle: "background"
+heroStyle: background
 ---
 
 # Summary
