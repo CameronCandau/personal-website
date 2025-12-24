@@ -102,11 +102,6 @@ Lastly, I heavily rely on environment variables. I can take down my infrastructu
 
 Secrets are stored securely on my workstation (full-disk encryption) and in my cloud password manager. If I somehow lose my workstation, they still live in my password manager, ensuring I don't lose access to my systems and data.
 
-# Coming Next
+# Next
 
-This post covered the architectural foundation. In upcoming posts, I'll dive into:
-- Terraform and Ansible implementation details
-- VPN Router configuration
-- DNS Server Deployment
-- Automated TLS certificate management with DNS-01 challenges
-- Encrypted backup automation with Restic
+Terraform and Ansible implementation details
