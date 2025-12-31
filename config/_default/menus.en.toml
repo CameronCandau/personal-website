@@ -16,16 +16,24 @@
 #  weight = 10
 
 [[main]]
-name = "Homelab"
-pageRef = "Homelab"
-
-[[main]]
-name = "About"
-pageRef = "About"
-
-[[main]]
 name = "CTF"
 pageRef = "CTF"
+weight = 1
+
+[[main]]
+name = "Homelab"
+pageRef = "Homelab"
+weight = 2
+
+[[main]]
+name = "Uses"
+pageRef = "Uses"
+weight = 3
+
+[[main]]
+name = "About Me"
+pageRef = "About"
+weight = 4
 
 #[[main]]
 #  name = "Parent"
