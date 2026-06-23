@@ -8,6 +8,8 @@ public/
 resources/_gen/
 .hugo_build.lock
 static/ctf/
+content/notes/*.md
+!content/notes/_index.md
 
 # Quartz local artifacts
 ctf-quartz/node_modules/

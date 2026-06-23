@@ -22,15 +22,21 @@ pageRef = "blog"
 weight = 1
 
 [[main]]
+name = "Notes"
+pageRef = "notes"
+weight = 2
+
+
+[[main]]
 name = "CTF"
 url = "/ctf/"
-weight = 2
+weight = 3
 
 
 [[main]]
 name = "About Me"
 pageRef = "About"
-weight = 3
+weight = 4
 
 #[[main]]
 #  name = "Parent"

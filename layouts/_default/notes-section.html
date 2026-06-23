@@ -1,0 +1,45 @@
+{{ define "main" }}
+  {{ .Scratch.Set "scope" "list" }}
+
+  <header>
+    <h1 class="mt-5 text-4xl font-extrabold text-neutral-900 dark:text-neutral">{{ .Title }}</h1>
+  </header>
+
+  <section class="mt-0 prose flex max-w-full flex-col dark:prose-invert">
+    <div class="min-w-0 min-h-0 max-w-4xl">
+      {{ with .Params.description }}
+        <p>{{ . }}</p>
+      {{ end }}
+      {{ .Content }}
+    </div>
+  </section>
+
+  {{ $pages := .Pages.ByTitle }}
+  <section class="blog-section-shell">
+    <div class="blog-section-header">
+      <span>{{ len $pages }} {{ if eq (len $pages) 1 }}note{{ else }}notes{{ end }}</span>
+    </div>
+
+    {{ if gt (len $pages) 0 }}
+      <div class="notes-list">
+        {{ range $pages }}
+          {{ $matches := findRE `(?m)^##\s+(.+)$` .RawContent }}
+          {{ $snippetCount := len $matches }}
+          <a href="{{ .RelPermalink }}" class="note-row">
+            <div class="note-row-body">
+              <h2 class="note-row-title">{{ .Title }}</h2>
+              <div class="note-row-meta">
+                <span>{{ .File.BaseFileName }}</span>
+                <span>{{ $snippetCount }} {{ if eq $snippetCount 1 }}snippet{{ else }}snippets{{ end }}</span>
+              </div>
+            </div>
+          </a>
+        {{ end }}
+      </div>
+    {{ else }}
+      <div class="p-4 text-neutral-500 dark:text-neutral-400">
+        No notes synced yet.
+      </div>
+    {{ end }}
+  </section>
+{{ end }}
