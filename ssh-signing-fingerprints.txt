@@ -1,0 +1,4 @@
+# Cameron Candau SSH signing fingerprints
+
+GitHub: SHA256:vq9RyEI8+RgKNnxWbtDHCm2Qm97jITNjdt3P/ATBdFs
+

