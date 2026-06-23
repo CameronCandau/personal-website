@@ -124,6 +124,34 @@ html.dark .tmux-footer a:hover {
   margin: 0;
 }
 
+#search-modal header form {
+  border-radius: 0.55rem;
+}
+
+#search-query {
+  border-radius: 0.45rem;
+  caret-color: rgb(166, 227, 161);
+}
+
+#search-query:focus,
+#search-query:focus-visible {
+  outline: 2px solid rgba(166, 227, 161, 0.55);
+  outline-offset: 0;
+  box-shadow:
+    0 0 0 1px rgba(166, 227, 161, 0.22),
+    inset 0 0 0 1px rgba(166, 227, 161, 0.1);
+  background: rgba(166, 227, 161, 0.05);
+}
+
+html:not(.dark) #search-query:focus,
+html:not(.dark) #search-query:focus-visible {
+  outline-color: rgba(64, 160, 43, 0.45);
+  box-shadow:
+    0 0 0 1px rgba(64, 160, 43, 0.18),
+    inset 0 0 0 1px rgba(64, 160, 43, 0.08);
+  background: rgba(64, 160, 43, 0.05);
+}
+
 .tmux-footer .tmux-footer-meta {
   flex: 0 0 auto;
   font-size: 0.72rem;
