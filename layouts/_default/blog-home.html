@@ -1,0 +1,41 @@
+{{ define "main" }}
+  {{ .Scratch.Set "scope" "list" }}
+
+  <header>
+    <h1 class="mt-5 text-4xl font-extrabold text-neutral-900 dark:text-neutral">{{ .Title }}</h1>
+  </header>
+
+  <section class="mt-0 prose flex max-w-full flex-col dark:prose-invert">
+    <div class="min-w-0 min-h-0 max-w-prose">
+      {{ .Content }}
+    </div>
+  </section>
+
+  {{ $sections := slice
+    (site.GetPage "section" "blog/nightly")
+    (site.GetPage "section" "blog/stable")
+  }}
+  {{ $sections = sort $sections "Weight" }}
+
+  <section class="mt-10 max-w-5xl">
+    <div class="blog-pane-grid grid gap-0 md:grid-cols-2">
+      {{ range $index, $section := $sections }}
+        {{ if $section }}
+          <a
+            href="{{ $section.RelPermalink }}"
+            class="blog-pane">
+            <div class="blog-pane-body">
+              <h2 class="blog-pane-title">
+                {{ $section.Title }}
+              </h2>
+
+              {{ with $section.Params.description }}
+                <p class="blog-pane-desc">{{ . }}</p>
+              {{ end }}
+            </div>
+          </a>
+        {{ end }}
+      {{ end }}
+    </div>
+  </section>
+{{ end }}

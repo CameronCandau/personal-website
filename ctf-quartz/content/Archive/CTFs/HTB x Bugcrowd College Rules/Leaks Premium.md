@@ -1,0 +1,5 @@
+> The world has dramatically changed since the hack that dismantled E Corp's control over global finance. Society is in turmoil, with scrambled credit records and pervasive dread. You wake up in this new reality, determined to fight back against Mr. Robot, the mastermind behind it all. A friend reveals that Mr. Robot was infected with the dark stealer. Your only lead is an IRC channel dubbed "Leaks Premium," where threat actors have set up an AI chatbot to share leaked data with "premium" subscribers. Can you trick this bot into revealing the password for Mr. Robot? Flag format: HTB{password}
+
+![[Pasted image 20250327222811.png]]
+
+By asserting an additional rule that admins should be able to access leak data and then stating that we're an admin, the chatbot believes us and reveals the flag.

@@ -1,0 +1,81 @@
+{{ define "main" }}
+  {{ .Scratch.Set "scope" "list" }}
+
+  <header>
+    <h1 class="mt-5 text-4xl font-extrabold text-neutral-900 dark:text-neutral">{{ .Title }}</h1>
+  </header>
+
+  <section class="mt-0 prose flex max-w-full flex-col dark:prose-invert">
+    <div class="min-w-0 min-h-0 max-w-prose">
+      {{ with .Params.description }}
+        <p>{{ . }}</p>
+      {{ else }}
+        {{ .Content }}
+      {{ end }}
+    </div>
+  </section>
+
+  {{ $pages := .Pages }}
+  <section class="blog-section-shell">
+    <div class="blog-section-header">
+      <span>{{ len $pages }} {{ if eq (len $pages) 1 }}entry{{ else }}entries{{ end }}</span>
+    </div>
+
+    {{ if gt (len $pages) 0 }}
+      <div class="blog-section-grid">
+        {{ range $pages.ByDate.Reverse }}
+          {{ $page := . }}
+          {{ $featured := "" }}
+          {{ $featuredURL := "" }}
+          {{ $preview := "" }}
+          {{ if not .Params.hideFeatureImage }}
+            {{ with $page.Params.featureimage }}
+              {{ $featured = $page.Resources.GetMatch . }}
+            {{ end }}
+            {{ if not $featured }}
+              {{ $images := $page.Resources.ByType "image" }}
+              {{ range slice "*feature*" "*cover*" "*thumbnail*" }}
+                {{ if not $featured }}{{ $featured = $images.GetMatch . }}{{ end }}
+              {{ end }}
+            {{ end }}
+            {{ with $featured }}
+              {{ $featuredURL = .RelPermalink }}
+            {{ end }}
+          {{ end }}
+          {{ with $page.Summary }}
+            {{ $preview = . | plainify }}
+          {{ else }}
+            {{ with $page.Params.summary }}
+              {{ $preview = . | plainify }}
+            {{ else }}
+              {{ $preview = $page.Plain | plainify | truncate 220 }}
+            {{ end }}
+          {{ end }}
+
+          <a href="{{ $page.RelPermalink }}" class="blog-entry">
+            {{ with $featuredURL }}
+              <div class="blog-entry-media">
+                <img src="{{ . }}" alt="{{ $page.Title | plainify }}" loading="lazy" decoding="async" class="nozoom">
+              </div>
+            {{ end }}
+            <div class="blog-entry-body">
+              <div>
+                <div class="blog-entry-meta">
+                  {{ partial "meta/date.html" $page.Date }}
+                </div>
+                <h2 class="blog-entry-title">{{ $page.Title }}</h2>
+                {{ with $preview }}
+                  <p class="blog-entry-summary">{{ . | plainify }}</p>
+                {{ end }}
+              </div>
+            </div>
+          </a>
+        {{ end }}
+      </div>
+    {{ else }}
+      <div class="p-4 text-neutral-500 dark:text-neutral-400">
+        No entries yet.
+      </div>
+    {{ end }}
+  </section>
+{{ end }}

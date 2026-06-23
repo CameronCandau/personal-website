@@ -1,10 +1,17 @@
 .claude
 .obsidian/
+.direnv/
+.npm-cache/
 
 # Hugo build artifacts
 public/
 resources/_gen/
 .hugo_build.lock
+static/ctf/
+
+# Quartz local artifacts
+ctf-quartz/node_modules/
+ctf-quartz/quartz/.quartz-cache/
 
 # OS files
 .DS_Store
@@ -14,4 +21,3 @@ Thumbs.db
 *.swp
 *.swo
 *~
-

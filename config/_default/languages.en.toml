@@ -1,6 +1,6 @@
 disabled = false
-languageCode = "en"
-languageName = "English"
+locale = "en"
+label = "English"
 weight = 1
 title = "Cameron Candau"
 
@@ -19,7 +19,11 @@ github = "https://github.com/CameronCandau"
 [[params.author.links]]
 linkedin = "https://www.linkedin.com/in/cameron-candau/"
 
-["params.author"]
+[[params.author.links]]
+keybase = "https://keybase.io/cameroncandau"
+
+[params.author]
 name = "Cameron Candau"
 bio = ""
 headline = "Infrastructure Security Engineer"
+signingFingerprintFile = "/ssh-signing-fingerprints.txt"

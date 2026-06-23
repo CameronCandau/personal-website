@@ -1,0 +1,357 @@
+.tmux-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.55rem 0.8rem;
+  border: 1px solid rgba(69, 71, 90, 0.18);
+  border-radius: 0.7rem;
+  background: linear-gradient(180deg, rgba(245, 247, 255, 0.92), rgba(230, 235, 248, 0.9));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.45),
+    0 8px 24px rgba(24, 24, 37, 0.05);
+  font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+}
+
+html.dark .tmux-status {
+  border-color: rgba(205, 214, 244, 0.22);
+  background: linear-gradient(180deg, rgba(17, 17, 27, 0.82), rgba(30, 30, 46, 0.92));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+.tmux-status .main-menu-title a {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: rgb(36, 58, 34);
+  text-decoration: none;
+}
+
+.tmux-status .main-menu-title img {
+  width: 0.92rem;
+  height: 0.92rem;
+}
+
+.tmux-status .main-menu-title .name {
+  color: rgb(54, 58, 72);
+}
+
+html.dark .tmux-status .main-menu-title a {
+  color: rgb(245, 247, 255);
+}
+
+html.dark .tmux-status .main-menu-title .name {
+  color: rgba(245, 247, 255, 0.96);
+}
+
+.tmux-status nav a,
+.tmux-status button {
+  color: rgb(73, 121, 69);
+  transition: color 150ms ease, background-color 150ms ease;
+}
+
+html.dark .tmux-status nav a,
+html.dark .tmux-status button {
+  color: rgba(205, 214, 244, 0.92);
+}
+
+.tmux-status .main-menu-nav a,
+.tmux-status .main-menu-nav button {
+  padding: 0.12rem 0.45rem;
+  border-radius: 0.35rem;
+}
+
+.tmux-status .main-menu-nav a:hover,
+.tmux-status .main-menu-nav button:hover {
+  background: rgba(118, 185, 114, 0.12);
+  color: rgb(73, 121, 69);
+}
+
+html.dark .tmux-status .main-menu-nav a:hover,
+html.dark .tmux-status .main-menu-nav button:hover {
+  background: rgba(166, 227, 161, 0.12);
+  color: rgb(166, 227, 161);
+}
+
+.tmux-footer {
+  margin-top: 2rem;
+  padding: 0.45rem 0.75rem;
+  border: 1px solid rgba(69, 71, 90, 0.18);
+  border-radius: 0.55rem;
+  background: linear-gradient(180deg, rgba(245, 247, 255, 0.92), rgba(230, 235, 248, 0.88));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.45),
+    0 8px 24px rgba(24, 24, 37, 0.05);
+  font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+}
+
+html.dark .tmux-footer {
+  border-color: rgba(205, 214, 244, 0.2);
+  background: linear-gradient(180deg, rgba(17, 17, 27, 0.78), rgba(30, 30, 46, 0.9));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+.tmux-footer a {
+  color: rgb(73, 121, 69);
+}
+
+.tmux-footer a:hover {
+  color: rgb(94, 153, 90);
+}
+
+html.dark .tmux-footer a {
+  color: rgba(205, 214, 244, 0.92);
+}
+
+html.dark .tmux-footer a:hover {
+  color: rgb(166, 227, 161);
+}
+
+.tmux-footer .tmux-footer-links,
+.tmux-footer .tmux-footer-meta {
+  font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+}
+
+.tmux-footer .tmux-footer-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.9rem;
+  min-height: 2.1rem;
+}
+
+.tmux-footer .tmux-footer-links ul {
+  margin: 0;
+}
+
+.tmux-footer .tmux-footer-meta {
+  flex: 0 0 auto;
+  font-size: 0.72rem;
+  letter-spacing: 0.02em;
+  color: rgb(69, 71, 90);
+  white-space: nowrap;
+}
+
+html.dark .tmux-footer .tmux-footer-meta {
+  color: rgba(186, 194, 222, 0.88);
+}
+
+@media (max-width: 700px) {
+  .tmux-footer .tmux-footer-bar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .tmux-footer .tmux-footer-meta {
+    white-space: normal;
+  }
+}
+
+.blog-pane-grid {
+  border: 1px solid rgba(205, 214, 244, 0.28);
+  border-radius: 0.85rem;
+  background:
+    linear-gradient(180deg, rgba(17, 17, 27, 0.82), rgba(30, 30, 46, 0.9)),
+    linear-gradient(90deg, rgba(166, 227, 161, 0.04), transparent 30%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.03),
+    0 18px 45px rgba(0, 0, 0, 0.18);
+  overflow: hidden;
+}
+
+.blog-pane {
+  position: relative;
+  display: flex;
+  min-height: 21rem;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0;
+  text-decoration: none;
+  transition:
+    background-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease,
+    border-color 180ms ease;
+  background-color: rgba(30, 30, 46, 0.22);
+}
+
+.blog-pane:hover,
+.blog-pane:focus-visible {
+  background:
+    linear-gradient(180deg, rgba(166, 227, 161, 0.09), rgba(148, 226, 213, 0.03) 45%, rgba(30, 30, 46, 0.36)),
+    rgba(30, 30, 46, 0.34);
+  box-shadow: inset 0 0 0 1px rgba(166, 227, 161, 0.72);
+  outline: none;
+  transform: translateY(-1px);
+}
+
+.blog-pane + .blog-pane {
+  border-top: 1px solid rgba(205, 214, 244, 0.24);
+}
+
+.blog-pane-body {
+  padding: 1.6rem 1.4rem 1.5rem;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.blog-pane-title {
+  font-size: clamp(2.6rem, 5vw, 4.5rem);
+  line-height: 0.95;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: rgb(245, 247, 255);
+  text-wrap: balance;
+  transition: color 180ms ease;
+}
+
+.blog-pane:hover .blog-pane-title,
+.blog-pane:focus-visible .blog-pane-title {
+  color: rgb(166, 227, 161);
+}
+
+.blog-pane-desc {
+  max-width: 24rem;
+  font-size: 1.08rem;
+  line-height: 1.65;
+  color: rgba(186, 194, 222, 0.88);
+  transition: color 180ms ease;
+}
+
+.blog-pane:hover .blog-pane-desc,
+.blog-pane:focus-visible .blog-pane-desc {
+  color: rgb(245, 247, 255);
+}
+
+.blog-section-shell {
+  margin-top: 2rem;
+  border: 1px solid rgba(205, 214, 244, 0.24);
+  border-radius: 0.85rem;
+  overflow: hidden;
+  background:
+    linear-gradient(180deg, rgba(17, 17, 27, 0.65), rgba(30, 30, 46, 0.88));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.03),
+    0 18px 45px rgba(0, 0, 0, 0.16);
+}
+
+.blog-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding: 0.8rem 1rem;
+  border-bottom: 1px solid rgba(205, 214, 244, 0.18);
+  background: rgba(17, 17, 27, 0.42);
+  font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(186, 194, 222, 0.74);
+}
+
+.blog-section-grid {
+  display: grid;
+  gap: 1rem;
+  padding: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+}
+
+.blog-entry {
+  display: flex;
+  min-height: 20rem;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid rgba(205, 214, 244, 0.16);
+  border-radius: 0.7rem;
+  background: rgba(30, 30, 46, 0.26);
+  text-decoration: none;
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    border-color 180ms ease,
+    background-color 180ms ease;
+}
+
+.blog-entry:hover,
+.blog-entry:focus-visible {
+  outline: none;
+  transform: translateY(-1px);
+  border-color: rgba(166, 227, 161, 0.62);
+  box-shadow: inset 0 0 0 1px rgba(166, 227, 161, 0.62);
+  background:
+    linear-gradient(180deg, rgba(166, 227, 161, 0.08), rgba(148, 226, 213, 0.03) 45%, rgba(30, 30, 46, 0.3)),
+    rgba(30, 30, 46, 0.28);
+}
+
+.blog-entry-media {
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-bottom: 1px solid rgba(205, 214, 244, 0.14);
+  background: rgba(17, 17, 27, 0.3);
+}
+
+.blog-entry-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.blog-entry-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.9rem;
+  padding: 1rem 1rem 1.1rem;
+}
+
+.blog-entry-meta {
+  font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+  font-size: 0.76rem;
+  color: rgba(166, 173, 200, 0.78);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.blog-entry-title {
+  margin-top: 0.55rem;
+  font-size: 2rem;
+  line-height: 1;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: rgb(245, 247, 255);
+  transition: color 180ms ease;
+  text-wrap: balance;
+}
+
+.blog-entry:hover .blog-entry-title,
+.blog-entry:focus-visible .blog-entry-title {
+  color: rgb(166, 227, 161);
+}
+
+.blog-entry-summary {
+  font-size: 1rem;
+  line-height: 1.65;
+  color: rgba(186, 194, 222, 0.88);
+  transition: color 180ms ease;
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.blog-entry:hover .blog-entry-summary,
+.blog-entry:focus-visible .blog-entry-summary {
+  color: rgb(245, 247, 255);
+}
+
+@media (min-width: 768px) {
+  .blog-pane + .blog-pane {
+    border-top: 0;
+    border-left: 1px solid rgba(205, 214, 244, 0.24);
+  }
+}
