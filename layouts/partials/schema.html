@@ -17,13 +17,14 @@
   </script>
 {{ else }}
   {{- $iso8601 := "2006-01-02T15:04:05-07:00" -}}
+  {{- $pageTitle := .Params.title | default .Title | default (partial "page-title.html" .) -}}
   <script type="application/ld+json">
   [{
     "@context": "https://schema.org",
     "@type": "Article",
     "articleSection": "{{ (site.GetPage .Section).Title | safeJS }}",
-    "name": "{{ .Title | safeJS }}",
-    "headline": "{{ .Title | safeJS }}",
+    "name": "{{ $pageTitle | safeJS }}",
+    "headline": "{{ $pageTitle | safeJS }}",
     {{ with .Description }}"description": "{{ . | safeJS }}",{{ end }}
     {{ with .Summary }}"abstract": "{{ . | safeJS }}",{{ end }}
     {{ with .Site.Language.Locale }}"inLanguage": "{{ . }}",{{ end }}
@@ -61,7 +62,7 @@
         {
           "@type": "ListItem",
           "position": {{ add $index 1 }},
-          "name": "{{ .Title }}",
+          "name": "{{ .Params.title | default .Title | default (partial "page-title.html" .) }}",
           "item": {{ .Permalink }},
         }{{ if ne (add $index 1) (len $breadcrumbs) }},{{ end }}
       {{- end -}}

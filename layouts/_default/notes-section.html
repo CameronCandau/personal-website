@@ -1,5 +1,9 @@
 {{ define "main" }}
   {{ .Scratch.Set "scope" "list" }}
+  {{ $itemSingular := .Params.listNounSingular | default "note" }}
+  {{ $itemPlural := .Params.listNounPlural | default "notes" }}
+  {{ $emptyText := .Params.listEmptyText | default "No notes synced yet." }}
+  {{ $useDescriptionMeta := .Params.listUseDescription | default false }}
 
   <header>
     <h1 class="mt-5 text-4xl font-extrabold text-neutral-900 dark:text-neutral">{{ .Title }}</h1>
@@ -16,29 +20,25 @@
 
   {{ $pages := .Pages.ByTitle }}
   <section class="blog-section-shell">
-    <div class="blog-section-header">
-      <span>{{ len $pages }} {{ if eq (len $pages) 1 }}note{{ else }}notes{{ end }}</span>
-    </div>
-
     {{ if gt (len $pages) 0 }}
       <div class="notes-list">
         {{ range $pages }}
-          {{ $matches := findRE `(?m)^##\s+(.+)$` .RawContent }}
-          {{ $snippetCount := len $matches }}
+          {{ $title := .Params.title | default .Title | default (partial "page-title.html" .) }}
           <a href="{{ .RelPermalink }}" class="note-row">
             <div class="note-row-body">
-              <h2 class="note-row-title">{{ .Title }}</h2>
-              <div class="note-row-meta">
-                <span>{{ .File.BaseFileName }}</span>
-                <span>{{ $snippetCount }} {{ if eq $snippetCount 1 }}snippet{{ else }}snippets{{ end }}</span>
-              </div>
+              <h2 class="note-row-title">{{ $title }}</h2>
+              {{ with .Params.description }}
+                <div class="note-row-meta">
+                  <span>{{ . }}</span>
+                </div>
+              {{ end }}
             </div>
           </a>
         {{ end }}
       </div>
     {{ else }}
       <div class="p-4 text-neutral-500 dark:text-neutral-400">
-        No notes synced yet.
+        {{ $emptyText }}
       </div>
     {{ end }}
   </section>

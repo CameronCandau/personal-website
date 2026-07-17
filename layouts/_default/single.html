@@ -18,8 +18,9 @@
       {{ if .Params.showBreadcrumbs | default (site.Params.article.showBreadcrumbs | default false) }}
         {{ partial "breadcrumbs.html" . }}
       {{ end }}
+      {{ $title := .Params.title | default .Title | default (partial "page-title.html" .) }}
       <h1 class="mt-0 text-4xl font-extrabold text-neutral-900 dark:text-neutral">
-        {{ .Title | emojify }}
+        {{ $title | emojify }}
       </h1>
       <div class="mt-1 mb-6 text-base text-neutral-500 dark:text-neutral-400 print:hidden">
         {{ partial "article-meta/basic.html" (dict "context" . "scope" "single") }}
@@ -48,7 +49,7 @@
       <div class="min-w-0 min-h-0 max-w-fit">
         {{ partial "series/series.html" . }}
         <div class="article-content max-w-prose mb-20">
-          {{ .Content }}
+          {{ partial "render-page-content.html" . }}
           {{ $defaultReplyByEmail := site.Params.replyByEmail }}
           {{ $replyByEmail := default $defaultReplyByEmail .Params.replyByEmail }}
           {{ if $replyByEmail }}
@@ -56,7 +57,7 @@
               <a
                 target="_blank"
                 class="m-1 rounded bg-neutral-300 p-1.5 text-neutral-700 hover:bg-primary-500 hover:text-neutral dark:bg-neutral-700 dark:text-neutral-300 dark:hover:bg-primary-400 dark:hover:text-neutral-800"
-                href="mailto:{{ site.Params.Author.email }}?subject={{ replace (printf "Reply to %s" .Title) "\"" "'" }}">
+                href="mailto:{{ site.Params.Author.email }}?subject={{ replace (printf "Reply to %s" $title) "\"" "'" }}">
                 {{ i18n "article.reply_by_email" | default "Reply by Email" }}
               </a>
             </strong>

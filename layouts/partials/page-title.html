@@ -1,0 +1,15 @@
+{{- $title := .Params.title | default "" -}}
+{{- with .File -}}
+  {{- if eq $title "" -}}
+    {{- $base := .ContentBaseName -}}
+    {{- if or (eq $base "index") (eq $base "_index") -}}
+      {{- $title = humanize (path.Base (path.Dir .Path)) -}}
+    {{- else -}}
+      {{- $title = humanize $base -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- if eq $title "" -}}
+  {{- $title = .Title -}}
+{{- end -}}
+{{- $title -}}

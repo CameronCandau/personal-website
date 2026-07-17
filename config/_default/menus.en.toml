@@ -29,7 +29,7 @@ weight = 2
 
 [[main]]
 name = "CTF"
-url = "/ctf/"
+pageRef = "ctf"
 weight = 3
 
 

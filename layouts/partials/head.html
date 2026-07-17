@@ -8,12 +8,13 @@
   <meta name="theme-color">
 
   {{/* Title */}}
+  {{ $pageTitle := .Params.title | default .Title | default (partial "page-title.html" .) }}
   {{ if .IsHome }}
     <title>{{ .Site.Title | emojify }}</title>
     <meta name="title" content="{{ .Site.Title | emojify }}">
   {{ else }}
-    <title>{{ .Title | emojify }} &middot; {{ .Site.Title | emojify }}</title>
-    <meta name="title" content="{{ .Title | emojify }} &middot; {{ .Site.Title | emojify }}">
+    <title>{{ $pageTitle | emojify }} &middot; {{ .Site.Title | emojify }}</title>
+    <meta name="title" content="{{ $pageTitle | emojify }} &middot; {{ .Site.Title | emojify }}">
   {{ end }}
 
   {{/* Metadata */}}
@@ -54,6 +55,10 @@
   {{/* Social */}}
   {{ template "_internal/opengraph.html" . }}
   {{ template "_internal/twitter_cards.html" . }}
+  {{ if not .IsHome }}
+    <meta property="og:title" content="{{ $pageTitle | emojify }}">
+    <meta name="twitter:title" content="{{ $pageTitle | emojify }}">
+  {{ end }}
   {{/* Use defaultSocialImage if feature image does not exist */}}
   {{ $featureImage := "" }}
   {{ $pageImages := .Resources.ByType "image" }}

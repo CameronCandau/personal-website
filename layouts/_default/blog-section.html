@@ -17,10 +17,6 @@
 
   {{ $pages := .Pages }}
   <section class="blog-section-shell">
-    <div class="blog-section-header">
-      <span>{{ len $pages }} {{ if eq (len $pages) 1 }}entry{{ else }}entries{{ end }}</span>
-    </div>
-
     {{ if gt (len $pages) 0 }}
       <div class="blog-section-grid">
         {{ range $pages.ByDate.Reverse }}

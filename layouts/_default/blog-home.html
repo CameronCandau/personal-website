@@ -17,25 +17,28 @@
   }}
   {{ $sections = sort $sections "Weight" }}
 
-  <section class="mt-10 max-w-5xl">
-    <div class="blog-pane-grid grid gap-0 md:grid-cols-2">
+  <section class="mt-10">
+    <div class="blog-section-shell">
+      <div class="blog-section-grid">
       {{ range $index, $section := $sections }}
         {{ if $section }}
           <a
             href="{{ $section.RelPermalink }}"
-            class="blog-pane">
-            <div class="blog-pane-body">
-              <h2 class="blog-pane-title">
-                {{ $section.Title }}
-              </h2>
-
-              {{ with $section.Params.description }}
-                <p class="blog-pane-desc">{{ . }}</p>
-              {{ end }}
+            class="blog-entry">
+            <div class="blog-entry-body">
+              <div>
+                <h2 class="blog-entry-title">
+                  {{ $section.Title }}
+                </h2>
+                {{ with $section.Params.description }}
+                  <p class="blog-entry-summary">{{ . }}</p>
+                {{ end }}
+              </div>
             </div>
           </a>
         {{ end }}
       {{ end }}
+      </div>
     </div>
   </section>
 {{ end }}

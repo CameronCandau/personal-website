@@ -1,0 +1,33 @@
+{{- $raw := .RawContent -}}
+{{- if or (in $raw "![[") (in $raw "[[") -}}
+  {{- $content := $raw -}}
+  {{- $page := . -}}
+  {{- $content = replaceRE `!\[\[content/[^\]\|]*/([^/\]\|]+\.[A-Za-z0-9]+)\|([^\]]+)\]\]` `![$2](<$1>)` $content -}}
+  {{- $content = replaceRE `!\[\[content/[^\]]*/([^/\]]+\.[A-Za-z0-9]+)\]\]` `![](<$1>)` $content -}}
+  {{- $content = replaceRE `!\[\[([^\]\|]+)\|([^\]]+)\]\]` `![$2](<$1>)` $content -}}
+  {{- $content = replaceRE `!\[\[([^\]]+)\]\]` `![](<$1>)` $content -}}
+  {{- range .Resources.ByType "image" -}}
+    {{- $name := .Name -}}
+    {{- $base := path.Base $name -}}
+    {{- $content = replace $content (printf `(<%s>)` $name) (printf `(<%s>)` .RelPermalink) -}}
+    {{- if ne $base $name -}}
+      {{- $content = replace $content (printf `(<%s>)` $base) (printf `(<%s>)` .RelPermalink) -}}
+    {{- end -}}
+  {{- end -}}
+  {{- range findRE `(?s)\[\[[^\]]+\]\]` $content -}}
+    {{- $full := . -}}
+    {{- $inner := replaceRE `^\[\[|\]\]$` "" $full -}}
+    {{- $text := $inner -}}
+    {{- $target := $inner -}}
+    {{- if strings.Contains $inner "|" -}}
+      {{- $parts := split $inner "|" -}}
+      {{- $target = index $parts 0 -}}
+      {{- $text = index $parts 1 -}}
+    {{- end -}}
+    {{- $dest := partial "obsidian-link-destination.html" (dict "page" $page "target" $target) -}}
+    {{- $content = replace $content $full (printf `[%s](<%s>)` $text $dest) -}}
+  {{- end -}}
+  {{- $content | .RenderString (dict "display" "block") -}}
+{{- else -}}
+  {{- .Content -}}
+{{- end -}}
