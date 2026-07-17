@@ -1,0 +1,322 @@
+<!doctype html><html lang=en dir=ltr class=scroll-smooth data-default-appearance=dark data-auto-appearance=true><head><meta charset=utf-8><meta http-equiv=content-language content="en"><meta name=viewport content="width=device-width,initial-scale=1"><meta http-equiv=X-UA-Compatible content="ie=edge"><meta name=theme-color><title>Service discovery &#183; Cameron Candau</title><meta name=title content="Service discovery &#183; Cameron Candau"><link rel=canonical href=https://cameroncandau.com/ctf/archive/offsec---proving-grounds-writeups/windows/medjed/service-discovery/><meta name=author content="Cameron Candau"><link href=https://github.com/CameronCandau rel=me><link href=https://www.linkedin.com/in/cameron-candau/ rel=me><link href=https://keybase.io/cameroncandau rel=me><meta property="og:url" content="https://cameroncandau.com/ctf/archive/offsec---proving-grounds-writeups/windows/medjed/service-discovery/"><meta property="og:site_name" content="Cameron Candau"><meta property="og:title" content="Cameron Candau"><meta property="og:locale" content="en"><meta property="og:type" content="article"><meta property="article:section" content="ctf"><meta name=twitter:card content="summary"><meta name=twitter:title content="Cameron Candau"><meta property="og:title" content="Service discovery"><meta name=twitter:title content="Service discovery"><link type=text/css rel=stylesheet href=/css/main.bundle.min.901c8b3f3c666c2b35185ac5e27901d94f574d29fc6216e16a132cba6b2c7bf9ba3f2375cb501a4d09bb37b0e62598fd19c3461cc8773b97389c972c65a1eb6a.css integrity="sha512-kByLPzxmbCs1GFrF4nkB2U9XTSn8YhbhahMsumsse/m6PyN1y1AaTQm7N7DmJZj9GcNGHMh3O5c4nJcsZaHrag=="><script type=text/javascript src=/js/appearance.min.6f41174b3a05b680820fe08cadbfa5fb7a7ca347b76a0955cdc68b9d8aca1ce24f0547e138cea33bcc7904d551a90afcb1cc7f2d9fe8557075d501419046c08c.js integrity="sha512-b0EXSzoFtoCCD+CMrb+l+3p8o0e3aglVzcaLnYrKHOJPBUfhOM6jO8x5BNVRqQr8scx/LZ/oVXB11QFBkEbAjA=="></script><script src=/lib/zoom/zoom.min.umd.a527109b68c082a70f3697716dd72a9d5aa8b545cf800cecbbc7399f2ca6f6e0ce3e431f2062b48bbfa47c9ea42822714060bef309be073f49b9c0e30d318d7b.js integrity="sha512-pScQm2jAgqcPNpdxbdcqnVqotUXPgAzsu8c5nyym9uDOPkMfIGK0i7+kfJ6kKCJxQGC+8wm+Bz9JucDjDTGNew=="></script><script defer type=text/javascript id=script-bundle src=/js/main.bundle.min.de68a223b0ccf6903210afc7b6382a7e214d542da77501d7f1513167f8f8f4fe41609e9b1b1843f7123d8b924d7ecc361d768a90c734a4dd7d8cbdac1b0ba5a3.js integrity="sha512-3miiI7DM9pAyEK/HtjgqfiFNVC2ndQHX8VExZ/j49P5BYJ6bGxhD9xI9i5JNfsw2HXaKkMc0pN19jL2sGwulow==" data-copy=Copy data-copied=Copied></script><link rel=icon type=image/svg+xml href=/favicon.svg><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=manifest href=/site.webmanifest><script type=application/ld+json>[{"@context":"https://schema.org","@type":"Article","articleSection":"CTF","name":"Service discovery","headline":"Service discovery","inLanguage":"en","url":"https://cameroncandau.com/ctf/archive/offsec---proving-grounds-writeups/windows/medjed/service-discovery/","author":{"@type":"Person","name":"Cameron Candau"},"mainEntityOfPage":"true","wordCount":"1306"}]</script></head><body class="flex flex-col h-screen m-auto leading-7 max-w-7xl px-6 sm:px-14 md:px-24 lg:px-32 text-lg bg-neutral text-neutral-900 dark:bg-neutral-800 dark:text-neutral scrollbar-thin scrollbar-track-neutral-200 scrollbar-thumb-neutral-400 dark:scrollbar-track-neutral-800 dark:scrollbar-thumb-neutral-600"><div id=the-top class="absolute flex self-center"><a class="px-3 py-1 text-sm -translate-y-8 rounded-b-lg bg-primary-200 focus:translate-y-0 dark:bg-neutral-600" href=#main-content><span class="font-bold text-primary-600 pe-2 dark:text-primary-400">&darr;</span>
+Skip to main content</a></div><div class="main-menu tmux-status mt-3 mb-4"><div class="flex flex-1 items-center justify-between gap-4"><nav class="main-menu-title flex"><a href=/ class="flex items-center gap-4 text-base font-medium" title=Home><img src=/favicon.svg alt class="h-6 w-6 rounded-sm nozoom" aria-hidden=true>
+<span class=name>Cameron Candau</span></a></nav><div class=main-menu-nav><nav class="hidden md:flex items-center gap-x-5 md:ml-12"><a href=/blog/ class="flex items-center hover:text-primary-600 dark:hover:text-primary-400" aria-label=Blog title=Blog><span class="text-base font-medium">Blog</span>
+</a><a href=/notes/ class="flex items-center hover:text-primary-600 dark:hover:text-primary-400" aria-label=Notes title=Notes><span class="text-base font-medium">Notes</span>
+</a><a href=/ctf/ class="flex items-center hover:text-primary-600 dark:hover:text-primary-400" aria-label=CTF title=CTF><span class="text-base font-medium">CTF</span>
+</a><a href=/about/ class="flex items-center hover:text-primary-600 dark:hover:text-primary-400" aria-label="About Me" title=About><span class="text-base font-medium">About Me</span>
+</a><button id=search-button aria-label=Search class="text-base hover:text-primary-600 dark:hover:text-primary-400" title="Search (/)">
+<span class="relative block icon"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="search" class="svg-inline--fa fa-search fa-w-16" role="img" viewBox="0 0 512 512"><path fill="currentColor" d="M505 442.7 405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9.0 208 0S0 93.1.0 208s93.1 208 208 208c48.3.0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9.0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7.0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7.0 128 57.2 128 128 0 70.7-57.2 128-128 128z"/></svg></span></button><div class="flex items-center"><button id=appearance-switcher aria-label="Dark mode switcher" type=button class="text-base hover:text-primary-600 dark:hover:text-primary-400"><div class="flex items-center justify-center dark:hidden"><span class="relative block icon"><svg viewBox="0 0 512 512"><path fill="currentColor" d="M32 256C32 132.2 132.3 32 255.8 32c11.36.0 29.7 1.668 40.9 3.746 9.616 1.777 11.75 14.63 3.279 19.44C245 86.5 211.2 144.6 211.2 207.8c0 109.7 99.71 193 208.3 172.3 9.561-1.805 16.28 9.324 10.11 16.95C387.9 448.6 324.8 480 255.8 480 132.1 480 32 379.6 32 256z"/></svg></span></div><div class="items-center justify-center hidden dark:flex"><span class="relative block icon"><svg viewBox="0 0 512 512"><path fill="currentColor" d="M256 159.1c-53.02.0-95.1 42.98-95.1 95.1s41.2 96.9 95.1 96.9 95.1-42.98 95.1-95.1S309 159.1 256 159.1zM509.3 347l-63.2-91.9 63.15-91.01c6.332-9.125 1.104-21.74-9.826-23.72l-109-19.7-19.7-109c-1.975-10.93-14.59-16.16-23.72-9.824L256 65.89 164.1 2.736c-9.125-6.332-21.74-1.107-23.72 9.824L121.6 121.6 12.56 141.3C1.633 143.2-3.596 155.9 2.736 164.1L65.89 256 2.74 347.01c-6.332 9.125-1.105 21.74 9.824 23.72l109 19.7 19.7 109c1.975 10.93 14.59 16.16 23.72 9.824L256 446.1l91.01 63.15c9.127 6.334 21.75 1.107 23.72-9.822l19.7-109 109-19.7C510.4 368.8 515.6 356.1 509.3 347zM256 383.1c-70.69.0-127.1-57.31-127.1-127.1.0-70.69 57.31-127.1 127.1-127.1S383.1 186.2 383.1 256c0 70.7-56.4 127.1-127.1 127.1z"/></svg></span></div></button></div></nav></div><div class="flex md:hidden items-center gap-x-5 md:ml-12 h-12"><span></span>
+<button id=search-button-mobile aria-label=Search class="text-base hover:text-primary-600 dark:hover:text-primary-400" title="Search (/)">
+<span class="relative block icon"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="search" class="svg-inline--fa fa-search fa-w-16" role="img" viewBox="0 0 512 512"><path fill="currentColor" d="M505 442.7 405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9.0 208 0S0 93.1.0 208s93.1 208 208 208c48.3.0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9.0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7.0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7.0 128 57.2 128 128 0 70.7-57.2 128-128 128z"/></svg>
+</span></button>
+<button id=appearance-switcher-mobile aria-label="Dark mode switcher" type=button class="text-base hover:text-primary-600 dark:hover:text-primary-400 me-1"><div class="flex items-center justify-center dark:hidden"><span class="relative block icon"><svg viewBox="0 0 512 512"><path fill="currentColor" d="M32 256C32 132.2 132.3 32 255.8 32c11.36.0 29.7 1.668 40.9 3.746 9.616 1.777 11.75 14.63 3.279 19.44C245 86.5 211.2 144.6 211.2 207.8c0 109.7 99.71 193 208.3 172.3 9.561-1.805 16.28 9.324 10.11 16.95C387.9 448.6 324.8 480 255.8 480 132.1 480 32 379.6 32 256z"/></svg></span></div><div class="items-center justify-center hidden dark:flex"><span class="relative block icon"><svg viewBox="0 0 512 512"><path fill="currentColor" d="M256 159.1c-53.02.0-95.1 42.98-95.1 95.1s41.2 96.9 95.1 96.9 95.1-42.98 95.1-95.1S309 159.1 256 159.1zM509.3 347l-63.2-91.9 63.15-91.01c6.332-9.125 1.104-21.74-9.826-23.72l-109-19.7-19.7-109c-1.975-10.93-14.59-16.16-23.72-9.824L256 65.89 164.1 2.736c-9.125-6.332-21.74-1.107-23.72 9.824L121.6 121.6 12.56 141.3C1.633 143.2-3.596 155.9 2.736 164.1L65.89 256 2.74 347.01c-6.332 9.125-1.105 21.74 9.824 23.72l109 19.7 19.7 109c1.975 10.93 14.59 16.16 23.72 9.824L256 446.1l91.01 63.15c9.127 6.334 21.75 1.107 23.72-9.822l19.7-109 109-19.7C510.4 368.8 515.6 356.1 509.3 347zM256 383.1c-70.69.0-127.1-57.31-127.1-127.1.0-70.69 57.31-127.1 127.1-127.1S383.1 186.2 383.1 256c0 70.7-56.4 127.1-127.1 127.1z"/></svg></span></div></button></div></div><div class="-my-2 md:hidden"><div id=menu-button class=block><div class="cursor-pointer hover:text-primary-600 dark:hover:text-primary-400"><span class="relative block icon"><svg viewBox="0 0 448 512"><path fill="currentColor" d="M0 96C0 78.33 14.33 64 32 64H416c17.7.0 32 14.33 32 32 0 17.7-14.3 32-32 32H32C14.33 128 0 113.7.0 96zM0 256c0-17.7 14.33-32 32-32H416c17.7.0 32 14.3 32 32s-14.3 32-32 32H32c-17.67.0-32-14.3-32-32zM416 448H32c-17.67.0-32-14.3-32-32s14.33-32 32-32H416c17.7.0 32 14.3 32 32s-14.3 32-32 32z"/></svg></span></div><div id=menu-wrapper class="fixed inset-0 z-30 invisible w-screen h-screen m-0 overflow-auto transition-opacity opacity-0 cursor-default bg-neutral-100/50 backdrop-blur-sm dark:bg-neutral-900/50 pt-[5px]"><ul class="flex space-y-2 mt-3 flex-col items-end w-full px-6 py-6 mx-auto overflow-visible list-none text-end max-w-7xl"><li id=menu-close-button><span class="cursor-pointer inline-block align-text-bottom hover:text-primary-600 dark:hover:text-primary-400"><span class="relative block icon"><svg viewBox="0 0 320 512"><path fill="currentColor" d="M310.6 361.4c12.5 12.5 12.5 32.75.0 45.25C304.4 412.9 296.2 416 288 416s-16.38-3.125-22.62-9.375L160 301.3 54.63 406.6C48.38 412.9 40.19 416 32 416S15.63 412.9 9.375 406.6c-12.5-12.5-12.5-32.75.0-45.25l105.4-105.4L9.375 150.6c-12.5-12.5-12.5-32.75.0-45.25s32.75-12.5 45.25.0L160 210.8l105.4-105.4c12.5-12.5 32.75-12.5 45.25.0s12.5 32.75.0 45.25l-105.4 105.4L310.6 361.4z"/></svg></span></span></li><li class=mt-1><a href=/blog/ class="flex items-center hover:text-primary-600 dark:hover:text-primary-400" aria-label=Blog title=Blog><span class="text-bg font-bg">Blog</span></a></li><li class=mt-1><a href=/notes/ class="flex items-center hover:text-primary-600 dark:hover:text-primary-400" aria-label=Notes title=Notes><span class="text-bg font-bg">Notes</span></a></li><li class=mt-1><a href=/ctf/ class="flex items-center hover:text-primary-600 dark:hover:text-primary-400" aria-label=CTF title=CTF><span class="text-bg font-bg">CTF</span></a></li><li class=mt-1><a href=/about/ class="flex items-center hover:text-primary-600 dark:hover:text-primary-400" aria-label="About Me" title=About><span class="text-bg font-bg">About Me</span></a></li></ul></div></div></div></div><div class="relative flex flex-col grow"><main id=main-content class=grow><article><header id=single_header class="mt-5 max-w-prose"><h1 class="mt-0 text-4xl font-extrabold text-neutral-900 dark:text-neutral">Service discovery</h1><div class="mt-1 mb-6 text-base text-neutral-500 dark:text-neutral-400 print:hidden"><div class="flex flex-row flex-wrap items-center"></div></div></header><section class="flex flex-col max-w-full mt-0 prose dark:prose-invert lg:flex-row"><div class="min-w-0 min-h-0 max-w-fit"><div class="article-content max-w-prose mb-20"><h1 class="relative group">Initial Setup & Information Gathering<div id=initial-setup--information-gathering class=anchor></div><span class="absolute top-0 w-6 transition-opacity opacity-0 -start-6 not-prose group-hover:opacity-100 select-none"><a class="text-primary-300 dark:text-neutral-700 !no-underline" href=#initial-setup--information-gathering aria-label=Anchor>#</a></span></h1><h2 class="relative group">Host Information<div id=host-information class=anchor></div><span class="absolute top-0 w-6 transition-opacity opacity-0 -start-6 not-prose group-hover:opacity-100 select-none"><a class="text-primary-300 dark:text-neutral-700 !no-underline" href=#host-information aria-label=Anchor>#</a></span></h2><pre tabindex=0><code>Target IP: 192.168.144.127
+Operating System: Windows 10 build 19042 x64
+Domain/Hostname: medjed
+Difficulty: Intermediate
+</code></pre><h2 class="relative group">Environment Variables / Setup<div id=environment-variables--setup class=anchor></div><span class="absolute top-0 w-6 transition-opacity opacity-0 -start-6 not-prose group-hover:opacity-100 select-none"><a class="text-primary-300 dark:text-neutral-700 !no-underline" href=#environment-variables--setup aria-label=Anchor>#</a></span></h2><pre tabindex=0><code>export IP=192.168.144.127
+mkdir $IP &amp;&amp; cd $IP
+mkdir {nmap,web,smb,ftp,exploit,loot}
+</code></pre><h1 class="relative group">Phase 1: Port Discovery<div id=phase-1-port-discovery class=anchor></div><span class="absolute top-0 w-6 transition-opacity opacity-0 -start-6 not-prose group-hover:opacity-100 select-none"><a class="text-primary-300 dark:text-neutral-700 !no-underline" href=#phase-1-port-discovery aria-label=Anchor>#</a></span></h1><h2 class="relative group">AutoRecon<div id=autorecon class=anchor></div><span class="absolute top-0 w-6 transition-opacity opacity-0 -start-6 not-prose group-hover:opacity-100 select-none"><a class="text-primary-300 dark:text-neutral-700 !no-underline" href=#autorecon aria-label=Anchor>#</a></span></h2><p><code>autorecon $IP --only-scans-dir</code></p><p><code>cat results/$IP/scans/_full_tcp_nmap.txt</code></p><pre tabindex=0><code>PORT      STATE SERVICE       REASON          VERSION
+135/tcp   open  msrpc         syn-ack ttl 125 Microsoft Windows RPC
+139/tcp   open  netbios-ssn   syn-ack ttl 125 Microsoft Windows netbios-ssn
+445/tcp   open  microsoft-ds? syn-ack ttl 125
+3306/tcp  open  mysql         syn-ack ttl 125 MariaDB 10.3.24 or later (unauthorized)
+5040/tcp  open  unknown       syn-ack ttl 125
+8000/tcp  open  http-alt      syn-ack ttl 125 BarracudaServer.com (Windows)
+|_http-server-header: BarracudaServer.com (Windows)
+|_http-title: Home
+|_http-favicon: Unknown favicon MD5: FDF624762222B41E2767954032B6F1FF
+| http-methods: 
+|   Supported Methods: OPTIONS GET HEAD PROPFIND PUT COPY DELETE MOVE MKCOL PROPPATCH LOCK UNLOCK POST
+|_  Potentially risky methods: PROPFIND PUT COPY DELETE MOVE MKCOL PROPPATCH LOCK UNLOCK
+| fingerprint-strings: 
+|   FourOhFourRequest, Socks5: 
+|     HTTP/1.1 200 OK
+|     Date: Thu, 28 Aug 2025 13:57:58 GMT
+|     Server: BarracudaServer.com (Windows)
+|     Connection: Close
+|   GenericLines, GetRequest: 
+|     HTTP/1.1 200 OK
+|     Date: Thu, 28 Aug 2025 13:57:52 GMT
+|     Server: BarracudaServer.com (Windows)
+|     Connection: Close
+|   HELP4STOMP: 
+|     HTTP/1.1 200 OK
+|     Date: Thu, 28 Aug 2025 14:00:52 GMT
+|     Server: BarracudaServer.com (Windows)
+|     Connection: Close
+|   HTTPOptions, RTSPRequest: 
+|     HTTP/1.1 200 OK
+|     Date: Thu, 28 Aug 2025 13:58:03 GMT
+|     Server: BarracudaServer.com (Windows)
+|     Connection: Close
+|   OfficeScan: 
+|     HTTP/1.1 200 OK
+|     Date: Thu, 28 Aug 2025 14:00:47 GMT
+|     Server: BarracudaServer.com (Windows)
+|     Connection: Close
+|   SIPOptions: 
+|     HTTP/1.1 400 Bad Request
+|     Date: Thu, 28 Aug 2025 13:59:20 GMT
+|     Server: BarracudaServer.com (Windows)
+|     Connection: Close
+|     Content-Type: text/html
+|     Cache-Control: no-store, no-cache, must-revalidate, max-age=0
+|     &lt;html&gt;&lt;body&gt;&lt;h1&gt;400 Bad Request&lt;/h1&gt;Can&#39;t parse request&lt;p&gt;BarracudaServer.com (Windows)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;
+|   apple-iphoto: 
+|     HTTP/1.1 400 Bad Request
+|     Date: Thu, 28 Aug 2025 14:02:19 GMT
+|     Server: BarracudaServer.com (Windows)
+|     Connection: Close
+|     Content-Type: text/html
+|     Cache-Control: no-store, no-cache, must-revalidate, max-age=0
+|_    &lt;html&gt;&lt;body&gt;&lt;h1&gt;400 Bad Request&lt;/h1&gt;HTTP/1.1 clients must supply &#34;host&#34; header&lt;p&gt;BarracudaServer.com (Windows)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;
+|_http-open-proxy: Proxy might be redirecting requests
+| http-webdav-scan: 
+|   Server Date: Thu, 28 Aug 2025 14:06:51 GMT
+|   Allowed Methods: OPTIONS, GET, HEAD, PROPFIND, PUT, COPY, DELETE, MOVE, MKCOL, PROPFIND, PROPPATCH, LOCK, UNLOCK
+|   WebDAV type: Unknown
+|_  Server Type: BarracudaServer.com (Windows)
+30021/tcp open  ftp           syn-ack ttl 125 FileZilla ftpd 0.9.41 beta
+| ftp-syst: 
+|_  SYST: UNIX emulated by FileZilla
+| ftp-anon: Anonymous FTP login allowed (FTP code 230)
+| -r--r--r-- 1 ftp ftp            536 Nov 03  2020 .gitignore
+| drwxr-xr-x 1 ftp ftp              0 Nov 03  2020 app
+| drwxr-xr-x 1 ftp ftp              0 Nov 03  2020 bin
+| drwxr-xr-x 1 ftp ftp              0 Nov 03  2020 config
+| -r--r--r-- 1 ftp ftp            130 Nov 03  2020 config.ru
+| drwxr-xr-x 1 ftp ftp              0 Nov 03  2020 db
+| -r--r--r-- 1 ftp ftp           1750 Nov 03  2020 Gemfile
+| drwxr-xr-x 1 ftp ftp              0 Nov 03  2020 lib
+| drwxr-xr-x 1 ftp ftp              0 Nov 03  2020 log
+| -r--r--r-- 1 ftp ftp             66 Nov 03  2020 package.json
+| drwxr-xr-x 1 ftp ftp              0 Nov 03  2020 public
+| -r--r--r-- 1 ftp ftp            227 Nov 03  2020 Rakefile
+| -r--r--r-- 1 ftp ftp            374 Nov 03  2020 README.md
+| drwxr-xr-x 1 ftp ftp              0 Nov 03  2020 test
+| drwxr-xr-x 1 ftp ftp              0 Nov 03  2020 tmp
+|_drwxr-xr-x 1 ftp ftp              0 Nov 03  2020 vendor
+|_ftp-bounce: bounce working!
+33033/tcp open  unknown       syn-ack ttl 125
+| fingerprint-strings: 
+|   GenericLines: 
+|     HTTP/1.1 400 Bad Request
+|   GetRequest, HTTPOptions: 
+|     HTTP/1.0 403 Forbidden
+|     Content-Type: text/html; charset=UTF-8
+|     Content-Length: 3102
+|     &lt;!DOCTYPE html&gt;
+|     &lt;html lang=&#34;en&#34;&gt;
+|     &lt;head&gt;
+|     &lt;meta charset=&#34;utf-8&#34; /&gt;
+|     &lt;title&gt;Action Controller: Exception caught&lt;/title&gt;
+|     &lt;style&gt;
+|     body {
+|     background-color: #FAFAFA;
+|     color: #333;
+|     margin: 0px;
+|     body, p, ol, ul, td {
+|     font-family: helvetica, verdana, arial, sans-serif;
+|     font-size: 13px;
+|     line-height: 18px;
+|     font-size: 11px;
+|     white-space: pre-wrap;
+|     pre.box {
+|     border: 1px solid #EEE;
+|     padding: 10px;
+|     margin: 0px;
+|     width: 958px;
+|     header {
+|     color: #F0F0F0;
+|     background: #C52F24;
+|     padding: 0.5em 1.5em;
+|     margin: 0.2em 0;
+|     line-height: 1.1em;
+|     font-size: 2em;
+|     color: #C52F24;
+|     line-height: 25px;
+|     .details {
+|_    bord
+44330/tcp open  ssl/unknown   syn-ack ttl 125
+|_ssl-date: 2025-08-28T14:07:20+00:00; 0s from scanner time.
+| ssl-cert: Subject: commonName=server demo 1024 bits/organizationName=Real Time Logic/stateOrProvinceName=CA/countryName=US/emailAddress=ginfo@realtimelogic.com/localityName=Laguna Niguel/organizationalUnitName=SharkSSL
+| Issuer: commonName=demo CA/organizationName=Real Time Logic/stateOrProvinceName=CA/countryName=US/emailAddress=ginfo@realtimelogic.com/localityName=Laguna Niguel/organizationalUnitName=SharkSSL
+| Public Key type: rsa
+| Public Key bits: 1024
+| Signature Algorithm: md5WithRSAEncryption
+| Not valid before: 2009-08-27T14:40:47
+| Not valid after:  2019-08-25T14:40:47
+| MD5:   3dd3:7bf7:464d:a77b:6d04:f44c:154b:7563
+| SHA-1: 3dc2:5fc6:a16f:1c51:8eee:45ce:80cf:b35e:7f92:ebbe
+| -----BEGIN CERTIFICATE-----
+| MIICsTCCAhoCAQUwDQYJKoZIhvcNAQEEBQAwgZkxCzAJBgNVBAYTAlVTMQswCQYD
+| VQQIEwJDQTEWMBQGA1UEBxMNTGFndW5hIE5pZ3VlbDEYMBYGA1UEChMPUmVhbCBU
+| aW1lIExvZ2ljMREwDwYDVQQLEwhTaGFya1NTTDEQMA4GA1UEAxMHZGVtbyBDQTEm
+| MCQGCSqGSIb3DQEJARYXZ2luZm9AcmVhbHRpbWVsb2dpYy5jb20wHhcNMDkwODI3
+| MTQ0MDQ3WhcNMTkwODI1MTQ0MDQ3WjCBpzELMAkGA1UEBhMCVVMxCzAJBgNVBAgT
+| AkNBMRYwFAYDVQQHEw1MYWd1bmEgTmlndWVsMRgwFgYDVQQKEw9SZWFsIFRpbWUg
+| TG9naWMxETAPBgNVBAsTCFNoYXJrU1NMMR4wHAYDVQQDExVzZXJ2ZXIgZGVtbyAx
+| MDI0IGJpdHMxJjAkBgkqhkiG9w0BCQEWF2dpbmZvQHJlYWx0aW1lbG9naWMuY29t
+| MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDI9kHT2xeC8GaBWFcTTqBLU2iF
+| Jt8gu5khgjW1LMkOQ1GgX53+siZP4QxPaua0pIEaGXh/qe1wYmucEjxJvidsyFyN
+| vgUjS7yP8AMCRGqdxhkbM4A5mcnmxu/8cRxFf19CIVnsD+netpHrscJfmk5f70cz
+| QLQQ2NlT8exLSh+5cQIDAQABMA0GCSqGSIb3DQEBBAUAA4GBAJFWpZDFuw9DUEQW
+| Uixb8tg17VjTMEQMd136md/KhwlDrhR2Dqk3cs1XRcuZxEHLN7etTBm/ubkMi6bx
+| Jq9rgmn/obL94UNkhuV/0VyHQiNkBrjdf4eY6zNY71PgVBxC0wULL5pcpfo0xUKc
+| IDMYIaRX7wyNO/lZcxIj0xmxTrqu
+|_-----END CERTIFICATE-----
+45332/tcp open  http          syn-ack ttl 125 Apache httpd 2.4.46 ((Win64) OpenSSL/1.1.1g PHP/7.3.23)
+|_http-server-header: Apache/2.4.46 (Win64) OpenSSL/1.1.1g PHP/7.3.23
+| http-methods: 
+|   Supported Methods: HEAD GET POST OPTIONS TRACE
+|_  Potentially risky methods: TRACE
+|_http-title: Quiz App
+45443/tcp open  http          syn-ack ttl 125 Apache httpd 2.4.46 ((Win64) OpenSSL/1.1.1g PHP/7.3.23)
+| http-methods: 
+|   Supported Methods: HEAD GET POST OPTIONS TRACE
+|_  Potentially risky methods: TRACE
+|_http-title: Quiz App
+|_http-server-header: Apache/2.4.46 (Win64) OpenSSL/1.1.1g PHP/7.3.23
+49664/tcp open  msrpc         syn-ack ttl 125 Microsoft Windows RPC
+49665/tcp open  msrpc         syn-ack ttl 125 Microsoft Windows RPC
+49666/tcp open  msrpc         syn-ack ttl 125 Microsoft Windows RPC
+49667/tcp open  msrpc         syn-ack ttl 125 Microsoft Windows RPC
+49668/tcp open  msrpc         syn-ack ttl 125 Microsoft Windows RPC
+49669/tcp open  msrpc         syn-ack ttl 125 Microsoft Windows RPC
+2 services unrecognized despite returning data. If you know the service/version, please submit the following fingerprints at https://nmap.org/cgi-bin/submit.cgi?new-service :
+==============NEXT SERVICE FINGERPRINT (SUBMIT INDIVIDUALLY)==============
+SF-Port8000-TCP:V=7.95%I=9%D=8/28%Time=68B06060%P=x86_64-pc-linux-gnu%r(Ge
+SF:nericLines,72,&#34;HTTP/1\.1\x20200\x20OK\r\nDate:\x20Thu,\x2028\x20Aug\x20
+SF:2025\x2013:57:52\x20GMT\r\nServer:\x20BarracudaServer\.com\x20\(Windows
+SF:\)\r\nConnection:\x20Close\r\n\r\n&#34;)%r(GetRequest,72,&#34;HTTP/1\.1\x20200\
+SF:x20OK\r\nDate:\x20Thu,\x2028\x20Aug\x202025\x2013:57:52\x20GMT\r\nServe
+SF:r:\x20BarracudaServer\.com\x20\(Windows\)\r\nConnection:\x20Close\r\n\r
+SF:\n&#34;)%r(FourOhFourRequest,72,&#34;HTTP/1\.1\x20200\x20OK\r\nDate:\x20Thu,\x2
+SF:028\x20Aug\x202025\x2013:57:58\x20GMT\r\nServer:\x20BarracudaServer\.co
+SF:m\x20\(Windows\)\r\nConnection:\x20Close\r\n\r\n&#34;)%r(Socks5,72,&#34;HTTP/1\
+SF:.1\x20200\x20OK\r\nDate:\x20Thu,\x2028\x20Aug\x202025\x2013:57:58\x20GM
+SF:T\r\nServer:\x20BarracudaServer\.com\x20\(Windows\)\r\nConnection:\x20C
+SF:lose\r\n\r\n&#34;)%r(HTTPOptions,72,&#34;HTTP/1\.1\x20200\x20OK\r\nDate:\x20Thu
+SF:,\x2028\x20Aug\x202025\x2013:58:03\x20GMT\r\nServer:\x20BarracudaServer
+SF:\.com\x20\(Windows\)\r\nConnection:\x20Close\r\n\r\n&#34;)%r(RTSPRequest,72
+SF:,&#34;HTTP/1\.1\x20200\x20OK\r\nDate:\x20Thu,\x2028\x20Aug\x202025\x2013:58
+SF::03\x20GMT\r\nServer:\x20BarracudaServer\.com\x20\(Windows\)\r\nConnect
+SF:ion:\x20Close\r\n\r\n&#34;)%r(SIPOptions,13C,&#34;HTTP/1\.1\x20400\x20Bad\x20Re
+SF:quest\r\nDate:\x20Thu,\x2028\x20Aug\x202025\x2013:59:20\x20GMT\r\nServe
+SF:r:\x20BarracudaServer\.com\x20\(Windows\)\r\nConnection:\x20Close\r\nCo
+SF:ntent-Type:\x20text/html\r\nCache-Control:\x20no-store,\x20no-cache,\x2
+SF:0must-revalidate,\x20max-age=0\r\n\r\n&lt;html&gt;&lt;body&gt;&lt;h1&gt;400\x20Bad\x20Req
+SF:uest&lt;/h1&gt;Can&#39;t\x20parse\x20request&lt;p&gt;BarracudaServer\.com\x20\(Windows\
+SF:)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;&#34;)%r(OfficeScan,72,&#34;HTTP/1\.1\x20200\x20OK\r\nDate:\
+SF:x20Thu,\x2028\x20Aug\x202025\x2014:00:47\x20GMT\r\nServer:\x20Barracuda
+SF:Server\.com\x20\(Windows\)\r\nConnection:\x20Close\r\n\r\n&#34;)%r(HELP4STO
+SF:MP,72,&#34;HTTP/1\.1\x20200\x20OK\r\nDate:\x20Thu,\x2028\x20Aug\x202025\x20
+SF:14:00:52\x20GMT\r\nServer:\x20BarracudaServer\.com\x20\(Windows\)\r\nCo
+SF:nnection:\x20Close\r\n\r\n&#34;)%r(apple-iphoto,153,&#34;HTTP/1\.1\x20400\x20Ba
+SF:d\x20Request\r\nDate:\x20Thu,\x2028\x20Aug\x202025\x2014:02:19\x20GMT\r
+SF:\nServer:\x20BarracudaServer\.com\x20\(Windows\)\r\nConnection:\x20Clos
+SF:e\r\nContent-Type:\x20text/html\r\nCache-Control:\x20no-store,\x20no-ca
+SF:che,\x20must-revalidate,\x20max-age=0\r\n\r\n&lt;html&gt;&lt;body&gt;&lt;h1&gt;400\x20Bad
+SF:\x20Request&lt;/h1&gt;HTTP/1\.1\x20clients\x20must\x20supply\x20\&#34;host\&#34;\x20h
+SF:eader&lt;p&gt;BarracudaServer\.com\x20\(Windows\)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;&#34;);
+==============NEXT SERVICE FINGERPRINT (SUBMIT INDIVIDUALLY)==============
+SF-Port33033-TCP:V=7.95%I=9%D=8/28%Time=68B06060%P=x86_64-pc-linux-gnu%r(G
+SF:enericLines,1C,&#34;HTTP/1\.1\x20400\x20Bad\x20Request\r\n\r\n&#34;)%r(GetReque
+SF:st,C76,&#34;HTTP/1\.0\x20403\x20Forbidden\r\nContent-Type:\x20text/html;\x2
+SF:0charset=UTF-8\r\nContent-Length:\x203102\r\n\r\n&lt;!DOCTYPE\x20html&gt;\n&lt;h
+SF:tml\x20lang=\&#34;en\&#34;&gt;\n&lt;head&gt;\n\x20\x20&lt;meta\x20charset=\&#34;utf-8\&#34;\x20/&gt;\n
+SF:\x20\x20&lt;title&gt;Action\x20Controller:\x20Exception\x20caught&lt;/title&gt;\n\x
+SF:20\x20&lt;style&gt;\n\x20\x20\x20\x20body\x20{\n\x20\x20\x20\x20\x20\x20backg
+SF:round-color:\x20#FAFAFA;\n\x20\x20\x20\x20\x20\x20color:\x20#333;\n\x20
+SF:\x20\x20\x20\x20\x20margin:\x200px;\n\x20\x20\x20\x20}\n\n\x20\x20\x20\
+SF:x20body,\x20p,\x20ol,\x20ul,\x20td\x20{\n\x20\x20\x20\x20\x20\x20font-f
+SF:amily:\x20helvetica,\x20verdana,\x20arial,\x20sans-serif;\n\x20\x20\x20
+SF:\x20\x20\x20font-size:\x20\x20\x2013px;\n\x20\x20\x20\x20\x20\x20line-h
+SF:eight:\x2018px;\n\x20\x20\x20\x20}\n\n\x20\x20\x20\x20pre\x20{\n\x20\x2
+SF:0\x20\x20\x20\x20font-size:\x2011px;\n\x20\x20\x20\x20\x20\x20white-spa
+SF:ce:\x20pre-wrap;\n\x20\x20\x20\x20}\n\n\x20\x20\x20\x20pre\.box\x20{\n\
+SF:x20\x20\x20\x20\x20\x20border:\x201px\x20solid\x20#EEE;\n\x20\x20\x20\x
+SF:20\x20\x20padding:\x2010px;\n\x20\x20\x20\x20\x20\x20margin:\x200px;\n\
+SF:x20\x20\x20\x20\x20\x20width:\x20958px;\n\x20\x20\x20\x20}\n\n\x20\x20\
+SF:x20\x20header\x20{\n\x20\x20\x20\x20\x20\x20color:\x20#F0F0F0;\n\x20\x2
+SF:0\x20\x20\x20\x20background:\x20#C52F24;\n\x20\x20\x20\x20\x20\x20paddi
+SF:ng:\x200\.5em\x201\.5em;\n\x20\x20\x20\x20}\n\n\x20\x20\x20\x20h1\x20{\
+SF:n\x20\x20\x20\x20\x20\x20margin:\x200\.2em\x200;\n\x20\x20\x20\x20\x20\
+SF:x20line-height:\x201\.1em;\n\x20\x20\x20\x20\x20\x20font-size:\x202em;\
+SF:n\x20\x20\x20\x20}\n\n\x20\x20\x20\x20h2\x20{\n\x20\x20\x20\x20\x20\x20
+SF:color:\x20#C52F24;\n\x20\x20\x20\x20\x20\x20line-height:\x2025px;\n\x20
+SF:\x20\x20\x20}\n\n\x20\x20\x20\x20\.details\x20{\n\x20\x20\x20\x20\x20\x
+SF:20bord&#34;)%r(HTTPOptions,C76,&#34;HTTP/1\.0\x20403\x20Forbidden\r\nContent-Ty
+SF:pe:\x20text/html;\x20charset=UTF-8\r\nContent-Length:\x203102\r\n\r\n&lt;!
+SF:DOCTYPE\x20html&gt;\n&lt;html\x20lang=\&#34;en\&#34;&gt;\n&lt;head&gt;\n\x20\x20&lt;meta\x20chars
+SF:et=\&#34;utf-8\&#34;\x20/&gt;\n\x20\x20&lt;title&gt;Action\x20Controller:\x20Exception\x
+SF:20caught&lt;/title&gt;\n\x20\x20&lt;style&gt;\n\x20\x20\x20\x20body\x20{\n\x20\x20\
+SF:x20\x20\x20\x20background-color:\x20#FAFAFA;\n\x20\x20\x20\x20\x20\x20c
+SF:olor:\x20#333;\n\x20\x20\x20\x20\x20\x20margin:\x200px;\n\x20\x20\x20\x
+SF:20}\n\n\x20\x20\x20\x20body,\x20p,\x20ol,\x20ul,\x20td\x20{\n\x20\x20\x
+SF:20\x20\x20\x20font-family:\x20helvetica,\x20verdana,\x20arial,\x20sans-
+SF:serif;\n\x20\x20\x20\x20\x20\x20font-size:\x20\x20\x2013px;\n\x20\x20\x
+SF:20\x20\x20\x20line-height:\x2018px;\n\x20\x20\x20\x20}\n\n\x20\x20\x20\
+SF:x20pre\x20{\n\x20\x20\x20\x20\x20\x20font-size:\x2011px;\n\x20\x20\x20\
+SF:x20\x20\x20white-space:\x20pre-wrap;\n\x20\x20\x20\x20}\n\n\x20\x20\x20
+SF:\x20pre\.box\x20{\n\x20\x20\x20\x20\x20\x20border:\x201px\x20solid\x20#
+SF:EEE;\n\x20\x20\x20\x20\x20\x20padding:\x2010px;\n\x20\x20\x20\x20\x20\x
+SF:20margin:\x200px;\n\x20\x20\x20\x20\x20\x20width:\x20958px;\n\x20\x20\x
+SF:20\x20}\n\n\x20\x20\x20\x20header\x20{\n\x20\x20\x20\x20\x20\x20color:\
+SF:x20#F0F0F0;\n\x20\x20\x20\x20\x20\x20background:\x20#C52F24;\n\x20\x20\
+SF:x20\x20\x20\x20padding:\x200\.5em\x201\.5em;\n\x20\x20\x20\x20}\n\n\x20
+SF:\x20\x20\x20h1\x20{\n\x20\x20\x20\x20\x20\x20margin:\x200\.2em\x200;\n\
+SF:x20\x20\x20\x20\x20\x20line-height:\x201\.1em;\n\x20\x20\x20\x20\x20\x2
+SF:0font-size:\x202em;\n\x20\x20\x20\x20}\n\n\x20\x20\x20\x20h2\x20{\n\x20
+SF:\x20\x20\x20\x20\x20color:\x20#C52F24;\n\x20\x20\x20\x20\x20\x20line-he
+SF:ight:\x2025px;\n\x20\x20\x20\x20}\n\n\x20\x20\x20\x20\.details\x20{\n\x
+SF:20\x20\x20\x20\x20\x20bord&#34;);
+Device type: general purpose|WAP
+Running (JUST GUESSING): Microsoft Windows 10|2019|7|2008|8.1|XP (98%), Linux 2.6.X|2.4.X (91%)
+OS CPE: cpe:/o:microsoft:windows_10 cpe:/o:linux:linux_kernel:2.6.22 cpe:/o:microsoft:windows_server_2019 cpe:/o:linux:linux_kernel:2.4 cpe:/o:microsoft:windows_7 cpe:/o:microsoft:windows_server_2008:r2 cpe:/o:microsoft:windows_8.1 cpe:/o:microsoft:windows_xp::sp3
+Aggressive OS guesses: Microsoft Windows 10 1909 - 2004 (98%), OpenWrt Kamikaze 7.09 (Linux 2.6.22) (91%), Microsoft Windows 10 1909 (90%), Microsoft Windows Server 2019 (90%), OpenWrt 0.9 - 7.09 (Linux 2.4.30 - 2.4.34) (90%), OpenWrt White Russian 0.9 (Linux 2.4.30) (90%), Microsoft Windows 10 1709 - 21H2 (89%), Microsoft Windows 10 1903 - 21H1 (89%), Microsoft Windows 7 SP1 or Windows Server 2008 R2 or Windows 8.1 (88%), Microsoft Windows XP SP3 (88%)
+No exact OS matches for host (If you know what OS is running on it, see https://nmap.org/submit/ ).
+TCP/IP fingerprint:
+OS:SCAN(V=7.95%E=4%D=8/28%OT=135%CT=1%CU=38693%PV=Y%DS=4%DC=T%G=Y%TM=68B062
+OS:9A%P=x86_64-pc-linux-gnu)SEQ(SP=102%GCD=1%ISR=106%TS=U)SEQ(SP=103%GCD=1%
+OS:ISR=10A%CI=I%TS=U)SEQ(SP=103%GCD=1%ISR=10C%CI=I%TS=U)SEQ(SP=106%GCD=1%IS
+OS:R=108%CI=I%TS=U)SEQ(SP=F8%GCD=1%ISR=FD%CI=I%TS=U)OPS(O1=M578NW8NNS%O2=M5
+OS:78NW8NNS%O3=M578NW8%O4=M578NW8NNS%O5=M578NW8NNS%O6=M578NNS)WIN(W1=FFFF%W
+OS:2=FFFF%W3=FFFF%W4=FFFF%W5=FFFF%W6=FF70)ECN(R=Y%DF=Y%T=80%W=FFFF%O=M578NW
+OS:8NNS%CC=N%Q=)T1(R=Y%DF=Y%T=80%S=O%A=S+%F=AS%RD=0%Q=)T2(R=N)T3(R=N)T4(R=Y
+OS:%DF=Y%T=80%W=0%S=A%A=O%F=R%O=%RD=0%Q=)T5(R=Y%DF=Y%T=80%W=0%S=Z%A=S+%F=AR
+OS:%O=%RD=0%Q=)T6(R=Y%DF=Y%T=80%W=0%S=A%A=O%F=R%O=%RD=0%Q=)T7(R=N)U1(R=Y%DF
+OS:=N%T=80%IPL=164%UN=0%RIPL=G%RID=G%RIPCK=G%RUCK=G%RUD=G)IE(R=N)
+
+Network Distance: 4 hops
+TCP Sequence Prediction: Difficulty=262 (Good luck!)
+IP ID Sequence Generation: Busy server or unknown class
+Service Info: OS: Windows; CPE: cpe:/o:microsoft:windows
+
+Host script results:
+| smb2-security-mode: 
+|   3:1:1: 
+|_    Message signing enabled but not required
+| p2p-conficker: 
+|   Checking for Conficker.C or higher...
+|   Check 1 (port 39771/tcp): CLEAN (Couldn&#39;t connect)
+|   Check 2 (port 9570/tcp): CLEAN (Couldn&#39;t connect)
+|   Check 3 (port 14245/udp): CLEAN (Timeout)
+|   Check 4 (port 56219/udp): CLEAN (Failed to receive data)
+|_  0/4 checks are positive: Host is CLEAN or ports are blocked
+|_clock-skew: mean: 0s, deviation: 0s, median: 0s
+| smb2-time: 
+|   date: 2025-08-28T14:06:56
+|_  start_date: N/A
+
+TRACEROUTE (using port 143/tcp)
+HOP RTT      ADDRESS
+1   88.89 ms 192.168.45.1
+2   88.80 ms 192.168.45.254
+3   88.95 ms 192.168.251.1
+4   89.04 ms 192.168.144.127
+</code></pre><h1 class="relative group">Service Enumeration Priority<div id=service-enumeration-priority class=anchor></div><span class="absolute top-0 w-6 transition-opacity opacity-0 -start-6 not-prose group-hover:opacity-100 select-none"><a class="text-primary-300 dark:text-neutral-700 !no-underline" href=#service-enumeration-priority aria-label=Anchor>#</a></span></h1><ul><li><input checked disabled type=checkbox> <a href=/ctf/archive/offsec---proving-grounds-writeups/windows/medjed/service-enumeration/30021-ftp/>30021 FTP</a></li><li><input checked disabled type=checkbox> <a href=/ctf/archive/offsec---proving-grounds-writeups/windows/medjed/service-enumeration/45332-http/>45332 HTTP</a></li><li><input checked disabled type=checkbox> <a href=/ctf/archive/offsec---proving-grounds-writeups/windows/medjed/service-enumeration/8000-http/>8000 HTTP</a></li></ul></div></div></section><footer class="pt-8 max-w-prose print:hidden"><div class=pt-8><hr class="border-dotted border-neutral-300 dark:border-neutral-600"><div class="flex justify-between pt-3"><span class="flex flex-col"><a class="flex text-neutral-700 hover:text-primary-600 dark:text-neutral dark:hover:text-primary-400" href=/ctf/archive/offsec---proving-grounds-writeups/windows/medjed/service-enumeration/30021-ftp/><span class=leading-6><span class="inline-block rtl:rotate-180">&larr;</span>&ensp;
+</span></a><span class="ms-6 mt-1 text-xs text-neutral-500 dark:text-neutral-400"><time datetime=0001-01-01T00:00:00+00:00>1 January 0001</time>
+</span></span><span class="flex flex-col items-end"></span></div></div></footer></article><div id=scroll-to-top class="fixed bottom-6 end-6 z-50 transform translate-y-4 opacity-0 duration-200"><a href=#the-top class="pointer-events-auto flex h-12 w-12 items-center justify-center rounded-full bg-neutral/50 text-xl text-neutral-700 hover:text-primary-600 dark:bg-neutral-800/50 dark:text-neutral dark:hover:text-primary-400" aria-label="Scroll to top" title="Scroll to top">&uarr;</a></div></main><footer id=site-footer class="tmux-footer py-0 print:hidden"><div class=tmux-footer-bar><nav class="tmux-footer-links text-sm font-medium text-neutral-600 dark:text-neutral-300" aria-label="Footer links"><ul class="flex list-none flex-wrap items-center gap-x-5 gap-y-1 p-0"><li><a class="decoration-primary-500 hover:text-primary-500 hover:underline hover:decoration-2 hover:underline-offset-2" href=mailto:hello@cameroncandau.com>Email</a></li><li><a class="decoration-primary-500 hover:text-primary-500 hover:underline hover:decoration-2 hover:underline-offset-2" href=https://github.com/CameronCandau target=_blank rel="me noopener noreferrer">Github</a></li><li><a class="decoration-primary-500 hover:text-primary-500 hover:underline hover:decoration-2 hover:underline-offset-2" href=https://www.linkedin.com/in/cameron-candau/ target=_blank rel="me noopener noreferrer">Linkedin</a></li><li><a class="decoration-primary-500 hover:text-primary-500 hover:underline hover:decoration-2 hover:underline-offset-2" href=https://keybase.io/cameroncandau target=_blank rel="me noopener noreferrer">Keybase</a></li><li><a class="decoration-primary-500 hover:text-primary-500 hover:underline hover:decoration-2 hover:underline-offset-2" href=/ssh-signing-fingerprints.txt target=_blank rel="noopener noreferrer">SSH Fingerprints</a></li></ul></nav></div><script>mediumZoom(document.querySelectorAll("img:not(.nozoom)"),{margin:24,background:"rgba(0,0,0,0.5)",scrollOffset:0})</script></footer><div id=search-wrapper class="invisible fixed inset-0 flex h-screen w-screen cursor-default flex-col bg-neutral-500/50 p-4 backdrop-blur-sm dark:bg-neutral-900/50 sm:p-6 md:p-[10vh] lg:p-[12vh] z-500" data-url=https://cameroncandau.com/><div id=search-modal class="flex flex-col w-full max-w-3xl min-h-0 mx-auto border rounded-md shadow-lg top-20 border-neutral-200 bg-neutral dark:border-neutral-700 dark:bg-neutral-800"><header class="relative z-10 flex items-center justify-between flex-none px-2"><form class="flex items-center flex-auto min-w-0"><div class="flex items-center justify-center w-8 h-8 text-neutral-400"><span class="relative block icon"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="search" class="svg-inline--fa fa-search fa-w-16" role="img" viewBox="0 0 512 512"><path fill="currentColor" d="M505 442.7 405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9.0 208 0S0 93.1.0 208s93.1 208 208 208c48.3.0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9.0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7.0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7.0 128 57.2 128 128 0 70.7-57.2 128-128 128z"/></svg></span></div><input type=search id=search-query class="flex flex-auto h-12 mx-1 bg-transparent appearance-none focus:outline-dotted focus:outline-2 focus:outline-transparent" placeholder=Search tabindex=0></form><button id=close-search-button class="flex items-center justify-center w-8 h-8 text-neutral-700 hover:text-primary-600 dark:text-neutral dark:hover:text-primary-400" title="Close (Esc)">
+<span class="relative block icon"><svg viewBox="0 0 320 512"><path fill="currentColor" d="M310.6 361.4c12.5 12.5 12.5 32.75.0 45.25C304.4 412.9 296.2 416 288 416s-16.38-3.125-22.62-9.375L160 301.3 54.63 406.6C48.38 412.9 40.19 416 32 416S15.63 412.9 9.375 406.6c-12.5-12.5-12.5-32.75.0-45.25l105.4-105.4L9.375 150.6c-12.5-12.5-12.5-32.75.0-45.25s32.75-12.5 45.25.0L160 210.8l105.4-105.4c12.5-12.5 32.75-12.5 45.25.0s12.5 32.75.0 45.25l-105.4 105.4L310.6 361.4z"/></svg></span></button></header><section class="flex-auto px-2 overflow-auto"><ul id=search-results></ul></section></div></div></div></body></html>
