@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">x- cover image</title>
+  <desc id="desc">Large sharp mint text on a flat dark background.</desc>
+  <defs>
+    <linearGradient id="ink" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#a6e3a1" />
+      <stop offset="60%" stop-color="#76b972" />
+      <stop offset="100%" stop-color="#62b7ae" />
+    </linearGradient>
+  </defs>
+
+  <rect width="1600" height="900" fill="#181825" />
+  <text
+    x="780"
+    y="480"
+    text-anchor="middle"
+    dominant-baseline="middle"
+    font-family="monospace"
+    font-size="560"
+    font-weight="900"
+    letter-spacing="-32"
+    fill="rgba(0,0,0,0.28)"
+    style="shape-rendering: crispEdges;"
+    transform="translate(14 14)">
+    x-
+  </text>
+  <text
+    x="780"
+    y="480"
+    text-anchor="middle"
+    dominant-baseline="middle"
+    font-family="monospace"
+    font-size="560"
+    font-weight="900"
+    letter-spacing="-32"
+    fill="url(#ink)"
+    style="shape-rendering: crispEdges;">
+    x-
+  </text>
+</svg>
