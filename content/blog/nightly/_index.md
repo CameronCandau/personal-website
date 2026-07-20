@@ -2,7 +2,7 @@
 title: Nightly
 layout: blog-section
 weight: 1
-description: short updates and notes in chronological order
+description: short updates, findings, quick tips. "today i learned"
 build:
   list: never
 ---
