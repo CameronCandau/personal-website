@@ -38,6 +38,9 @@ showTaxonomies: false
 - 2026-06-22:
   - More life delays without much lab progress
   - Consolidating this content from separate site on https://veilcat.dev to main site on https://cameroncandau.com/ctf
+- 2026-07-24:
+	- Bought 2nd exam attempt and challenge lab extension
+	- Scheduled exam tentatively for 8/29/26
 
 # Summary of Preparation
 
