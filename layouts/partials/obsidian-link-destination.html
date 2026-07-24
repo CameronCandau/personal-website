@@ -3,19 +3,30 @@
 {{- if hasPrefix $target "#" -}}
   {{- printf "#%s" (anchorize (strings.TrimPrefix "#" $target)) -}}
 {{- else -}}
+  {{- $fragment := "" -}}
+  {{- $pageTarget := $target -}}
+  {{- if strings.Contains $target "#" -}}
+    {{- $pageTarget = replaceRE `#.*$` "" $target -}}
+    {{- $fragment = replaceRE `^[^#]*#` "" $target -}}
+  {{- end -}}
   {{- $candidates := slice -}}
-  {{- if and $page.File (not (hasPrefix $target "/")) (not (strings.Contains $target "://")) -}}
+  {{- if and $page.File (not (hasPrefix $pageTarget "/")) (not (strings.Contains $pageTarget "://")) -}}
     {{- $dir := path.Dir $page.File.Path -}}
     {{- if eq (path.Base $page.File.Path) "index.md" -}}
       {{- $dir = path.Dir $dir -}}
     {{- end -}}
     {{- if ne $dir "." -}}
-      {{- $candidates = $candidates | append (printf "%s/%s" $dir $target) -}}
+      {{- $candidates = $candidates | append (printf "%s/%s" $dir $pageTarget) -}}
     {{- end -}}
   {{- end -}}
-  {{- $candidates = $candidates | append $target -}}
-  {{- if not (hasPrefix $target "ctf/") -}}
-    {{- $candidates = $candidates | append (printf "ctf/%s" $target) -}}
+  {{- if strings.Contains $pageTarget "/" -}}
+    {{- $candidates = $candidates | append $pageTarget -}}
+  {{- end -}}
+  {{- if and $page.Section (not (hasPrefix $pageTarget (printf "%s/" $page.Section))) -}}
+    {{- $candidates = $candidates | append (printf "%s/%s" $page.Section $pageTarget) -}}
+  {{- end -}}
+  {{- if not (hasPrefix $pageTarget "ctf/") -}}
+    {{- $candidates = $candidates | append (printf "ctf/%s" $pageTarget) -}}
   {{- end -}}
 
   {{- $resolved := "" -}}
@@ -30,17 +41,32 @@
       {{- end -}}
     {{- end -}}
   {{- end -}}
+  {{- if and (not $resolved) $page.Section -}}
+    {{- range where site.RegularPages "Section" $page.Section -}}
+      {{- if and (not $resolved) .File (eq (path.Base (path.Dir .File.Path)) $pageTarget) -}}
+        {{- $resolved = .RelPermalink -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+  {{- if and $resolved $fragment -}}
+    {{- $resolved = printf "%s#%s" $resolved (anchorize $fragment) -}}
+  {{- end -}}
 
   {{- if $resolved -}}
     {{- $resolved -}}
   {{- else -}}
-    {{- $parts := split (replaceRE `(^|/)\.?` "$1" (replaceRE `\.md$` "" $target)) "/" -}}
+    {{- $parts := split (replaceRE `(^|/)\.?` "$1" (replaceRE `\.md$` "" $pageTarget)) "/" -}}
     {{- $out := slice -}}
     {{- range $index, $part := $parts -}}
       {{- if and $part (ne $part ".") (not (and (eq $index (sub (len $parts) 1)) (eq $part "index"))) -}}
         {{- $out = $out | append ($part | urlize) -}}
       {{- end -}}
     {{- end -}}
-    {{- delimit $out "/" -}}
+    {{- $fallback := delimit $out "/" -}}
+    {{- if $fragment -}}
+      {{- printf "%s#%s" $fallback (anchorize $fragment) -}}
+    {{- else -}}
+      {{- $fallback -}}
+    {{- end -}}
   {{- end -}}
 {{- end -}}

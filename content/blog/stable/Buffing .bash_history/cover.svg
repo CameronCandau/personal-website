@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Buffing .bash_history cover image</title>
+  <desc id="desc">Large sharp mint text on a flat dark background, wrapped across multiple lines when needed.</desc>
+  <defs>
+    <linearGradient id="ink" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#a6e3a1" />
+      <stop offset="60%" stop-color="#76b972" />
+      <stop offset="100%" stop-color="#62b7ae" />
+    </linearGradient>
+  </defs>
+
+  <rect width="1600" height="900" fill="#181825" />
+  <text
+    x="800"
+    y="450"
+    text-anchor="middle"
+    font-family="monospace"
+    font-size="192"
+    font-weight="900"
+    letter-spacing="-12"
+    fill="rgba(0,0,0,0.28)"
+    style="shape-rendering: crispEdges;"
+    transform="translate(14 14)">
+    <tspan x="800" y="338">Buffing</tspan>
+    <tspan x="800" y="562">.bash_history</tspan>
+  </text>
+  <text
+    x="800"
+    y="450"
+    text-anchor="middle"
+    font-family="monospace"
+    font-size="192"
+    font-weight="900"
+    letter-spacing="-12"
+    fill="url(#ink)"
+    style="shape-rendering: crispEdges;">
+    <tspan x="800" y="338">Buffing</tspan>
+    <tspan x="800" y="562">.bash_history</tspan>
+  </text>
+</svg>

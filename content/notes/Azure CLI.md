@@ -1,11 +1,21 @@
+# Bicep Deployments
+
+## Create deployment using template and parameter files
+
+```
+az deployment sub create --location wus --template-file foo.bicep --parameters bar.json
+```
+
 # Azure Key Vault
 
 ## Show Key Vault
+
 ```bash
 az keyvault show --name 'vault-name'
 ```
 
 ## List Secret Names
+
 ```bash
 az keyvault secret list \
   --vault-name 'vault-name' \
@@ -14,6 +24,7 @@ az keyvault secret list \
 ```
 
 ## Show Secret Value
+
 ```bash
 az keyvault secret show \
   --vault-name "vault-name" \
@@ -24,6 +35,7 @@ az keyvault secret show \
 ```
 
 ## Search Secret Names in One Key Vault
+
 ```bash
 set -euo pipefail
 
@@ -35,6 +47,7 @@ printf '%s\n' "$secret_name_list" | grep -E -- '(token|url)' || true
 ```
 
 ## Search Secret Values in One Key Vault
+
 ```bash
 set -euo pipefail
 
@@ -67,6 +80,7 @@ done
 ```
 
 ## Search Secret Names Across Key Vaults
+
 ```bash
 set -euo pipefail
 
@@ -96,6 +110,7 @@ done
 ```
 
 ## Search Secret Values Across Key Vaults
+
 ```bash
 set -euo pipefail
 
@@ -142,3 +157,20 @@ for vault in "${vaults[@]}"; do
   done
 done
 ```
+
+# DNS
+
+Source: https://learn.microsoft.com/en-us/azure/dns/dns-operations-recordsets-cli#create-a-txt-record
+
+## Create a CNAME record
+
+```
+az network dns record-set cname set-record --resource-group myresourcegroup --zone-name contoso.com --record-set-name test-cname --cname www.contoso.com
+```
+
+## Create a TXT record
+
+```
+az network dns record-set txt add-record --resource-group myresourcegroup --zone-name contoso.com --record-set-name test-txt --value "This is a TXT record"
+```
+

@@ -19,14 +19,40 @@
   </section>
 
   {{ $pages := .Pages.ByTitle }}
+  {{ $groupByDir := .Params.listGroupByDir | default false }}
+  {{ if .Params.listRecursive }}
+    {{ $pages = sort .RegularPagesRecursive "File.Path" }}
+  {{ end }}
   <section class="blog-section-shell">
     {{ if gt (len $pages) 0 }}
-      <div class="notes-list">
+      <div class="{{ if $groupByDir }}note-tree{{ else }}notes-list{{ end }}">
+        {{ $sectionDir := "" }}
+        {{ with .File }}
+          {{ $sectionDir = .Dir }}
+        {{ end }}
+        {{ $currentGroup := "" }}
         {{ range $pages }}
-          {{ $title := .Params.title | default .Title | default (partial "page-title.html" .) }}
+          {{ $group := "" }}
+          {{ if and $groupByDir .File }}
+            {{ $group = strings.TrimSuffix "/" (strings.TrimPrefix $sectionDir .File.Dir) }}
+          {{ end }}
+          {{ if and $groupByDir (ne $group $currentGroup) }}
+            {{ if ne $currentGroup "" }}
+              </div>
+              </section>
+            {{ end }}
+            <section class="note-group">
+            <h2 class="note-group-title">{{ replace $group "/" " / " }}</h2>
+            <div class="notes-list">
+            {{ $currentGroup = $group }}
+          {{ end }}
+          {{ $title := .Params.title | default .LinkTitle | default .Title | default (partial "page-title.html" .) }}
+          {{ if and .File (or (not .Params.title) (eq $title .Title)) }}
+            {{ $title = .File.ContentBaseName }}
+          {{ end }}
           <a href="{{ .RelPermalink }}" class="note-row">
             <div class="note-row-body">
-              <h2 class="note-row-title">{{ $title }}</h2>
+              <h3 class="note-row-title">{{ $title }}</h3>
               {{ with .Params.description }}
                 <div class="note-row-meta">
                   <span>{{ . }}</span>
@@ -34,6 +60,10 @@
               {{ end }}
             </div>
           </a>
+        {{ end }}
+        {{ if and $groupByDir (ne $currentGroup "") }}
+          </div>
+          </section>
         {{ end }}
       </div>
     {{ else }}
