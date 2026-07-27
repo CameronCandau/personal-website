@@ -36,17 +36,17 @@ impacket-lookupsid guest@$IP
 
 ## Query WMI with credentials
 ```bash
-impacket-wmiquery domain.local/username:password@$IP "SELECT * FROM Win32_Service"
-impacket-wmiquery domain.local/username:password@$IP "SELECT * FROM Win32_Process"
+impacket-wmiquery "$DOMAIN"/"$USER":"$PASS"@$IP "SELECT * FROM Win32_Service"
+impacket-wmiquery "$DOMAIN"/"$USER":"$PASS"@$IP "SELECT * FROM Win32_Process"
 ```
 
 ## Execute with WMI or DCOM
 ```bash
-impacket-wmiexec domain.local/username:password@$IP
-impacket-dcomexec domain.local/username:password@$IP
+impacket-wmiexec "$DOMAIN"/"$USER":"$PASS"@$IP
+impacket-dcomexec "$DOMAIN"/"$USER":"$PASS"@$IP
 ```
 
 ## Query registry remotely
 ```bash
-impacket-reg domain.local/username:password@$IP query -keyName HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run
+impacket-reg "$DOMAIN"/"$USER":"$PASS"@$IP query -keyName HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run
 ```

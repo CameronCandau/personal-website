@@ -11,8 +11,10 @@
   {{ $showToc := and $enableToc (in .TableOfContents "<ul") }}
 
   {{/* Hero */}}
-  {{ if site.Params.list.showHero | default false }}
-    {{ $heroStyle := print "hero/" site.Params.list.heroStyle ".html" }}
+  {{ $showHero := .Params.showHero | default (site.Params.list.showHero | default false) }}
+  {{ if $showHero }}
+    {{ $heroStyle := .Params.heroStyle | default site.Params.list.heroStyle }}
+    {{ $heroStyle := print "hero/" $heroStyle ".html" }}
     {{ if templates.Exists (printf "partials/%s" $heroStyle) }}
       {{ partial $heroStyle . }}
     {{ else }}

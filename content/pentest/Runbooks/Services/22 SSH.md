@@ -19,6 +19,4 @@ ssh -o PreferredAuthentications=none username@$IP
 ```
 
 ## Pivoting
-```text
 Use [[Tunneling]].
-```

