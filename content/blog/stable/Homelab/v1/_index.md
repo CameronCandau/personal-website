@@ -12,7 +12,6 @@ showReadingTime: false
 showWordCount: false
 showAuthor: false
 ---
-
 # Summary
 This iteration was functional, but pretty basic. Although I used it for a few months from August to December, I was manually creating and configuring my infrastructure and applications. 
 
