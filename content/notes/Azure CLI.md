@@ -112,8 +112,6 @@ done
 ## Search Secret Values Across Key Vaults
 
 ```bash
-set -euo pipefail
-
 vault_list=$(
   az keyvault list --query '[].name' -o tsv
 )

