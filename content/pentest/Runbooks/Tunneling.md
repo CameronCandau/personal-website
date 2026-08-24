@@ -54,10 +54,7 @@ certificate_fingerprint
 agent.exe -connect <KALI-IP>:11601 -accept-fingerprint <FINGERPRINT>
 ```
 
-# Lab fallback only
-```cmd
-agent.exe -connect <KALI-IP>:11601 -ignore-cert
-```
+Or use `-ignore-cert` instead of accepting a fingerprint, but only in lab environments.
 
 ## Select the session
 ```bash

@@ -70,8 +70,10 @@ If you get local admin on a host:
 ## Sync time with the domain controller
 
 ```bash
-sudo ntpdate $DC_IP
+sudo rdate -n $DC_IP
 ```
+
+Alternatively, use `ntpdate`
 
 ## Add the domain and controller locally
 

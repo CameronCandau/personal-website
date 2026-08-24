@@ -2,7 +2,7 @@
 
 ## Sync time with the DC
 ```bash
-sudo ntpdate $DOMAIN
+sudo rdate -n $IP
 ```
 
 ## Run nmap Kerberos scripts

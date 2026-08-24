@@ -35,8 +35,21 @@ uname -a
 cat /etc/os-release
 ```
 
-## Print Environment Variables
+## Inspect files near you
 ```
+pwd
+ls -al
+```
+
+## List real users
+Manually test `su` user:user, to guess weak credentials.
+```bash
+awk -F: '$3 >= 1000 {print $1}' /etc/passwd
+```
+*Proving Grounds, PayDay*
+
+## Print Environment Variables
+```bash
 env
 ```
 
@@ -62,11 +75,15 @@ ip route
 
 ## Search for interesting files/folders
 ```
-ls -al /home/users
+ls -al /home
 
-find -type f /home/users 2>/dev/null
+find /home -type f 2>/dev/null
 
 ls -al /opt /var /tmp
+
+ls -l /etc/passwd
+
+ls -l /etc/shadow
 ```
 
 ## Check bash history and keys
@@ -176,3 +193,5 @@ Do this before pivoting:
 - pull LDAP, MySQL, web app, and backup configs while you still have context
 - check extra NICs, routes, listening ports, /etc/hosts
 - test found creds on SSH, databases, and other hosts
+
+[^1]: 

