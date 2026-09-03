@@ -1,0 +1,11 @@
+Summary from existing writeups:
+- :5000 http homegrown web app
+- directory brute force -> /settings has file upload for profile picture
+- use burp suite to bypass frontend-only file type validation
+- uploading a php file and then using the download button just downloads it rather than executing it
+- LFI: upload file named ../../../../../../etc/passwd and use download button. it downloads the system's /etc/passwd file
+- download /proc/self/cwd/utils/db.py -> find cleartext creds -> reuse on ssh
+- `sudo -l` -> /usr/bin/web-scraper /root/web_src_downloaded/\*.html
+- /usr/bin/web-scraper is a symlink to /opt/scraper/scraper.js
+- scraper.js imports happy-dom -> CVE-2024–51757
+- create javascript and html payloads to gain code execution as root 

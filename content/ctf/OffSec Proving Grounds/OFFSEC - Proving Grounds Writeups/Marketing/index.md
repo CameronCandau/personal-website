@@ -1,0 +1,12 @@
+Summary from existing writeups:
+- :80 redirects to marketing.pg -> add it to /etc/hosts
+- directory brute force -> discover /old -> manually browse, find a new "Surveys" section with a link to http://customers-survey.marketing.pg/ (add it to /etc/hosts also)
+- `http://customers-survey.marketing.pg/` is LimeSurvey instance. directory brute force finds /admin -> guess admin:admin
+- find authenticated RCE: https://github.com/Y1LD1R1M-1337/Limesurvey-RCE
+- find `limesurvey_user:EzPwz2022_dev1$$23!!` in `/var/www/LimeSurvey/application/config/config.php`
+- try password against local system users -> `su t.miller`
+- `sudo -l` shows t.miller can run `/usr/bin/sync.sh` as m.sander
+- linpeas as t.miller -> we're a member of `mlocate` -> can read /var/lib/mlocate/mlocate.db -> lists file `/home/m.sander/personalcreds-for-2022.txtnotes.txt` which should be usable to authenticate to sync.sh
+	- `sudo -u m.sander /usr/bin/sync.sh /home/m.sander/personal/creds-for-2022.txt` -> `error: forbidden` as the script requires the path to include m.sander -> make symlink in a path we control
+- sync.sh gives a few passwords for m.sander's online accounts. one of them is reused as their local password -> `su m.sander`
+- `sudo -l` shows m.sander can run all commands as root
