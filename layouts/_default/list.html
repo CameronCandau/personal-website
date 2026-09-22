@@ -1,5 +1,7 @@
 {{ define "main" }}
   {{ .Scratch.Set "scope" "list" }}
+  {{ $enableToc := .Params.showTableOfContents | default (site.Params.list.showTableOfContents | default false) }}
+  {{ $showToc := and $enableToc (in .TableOfContents "<ul") }}
   {{ $pages := .Pages }}
   {{ if .Params.recursiveList }}
     {{ $pages = .RegularPages }}
@@ -7,8 +9,6 @@
       {{ $pages = $pages | union .Pages }}
     {{ end }}
   {{ end }}
-  {{ $enableToc := .Params.showTableOfContents | default (site.Params.list.showTableOfContents | default false) }}
-  {{ $showToc := and $enableToc (in .TableOfContents "<ul") }}
 
   {{/* Hero */}}
   {{ $showHero := .Params.showHero | default (site.Params.list.showHero | default false) }}
@@ -27,46 +27,26 @@
     {{ if .Params.showBreadcrumbs | default (site.Params.list.showBreadcrumbs | default false) }}
       {{ partial "breadcrumbs.html" . }}
     {{ end }}
-    <h1 class="mt-5 text-4xl font-extrabold text-neutral-900 dark:text-neutral">{{ .Title }}</h1>
-    <div class="mt-1 mb-2 text-base text-neutral-500 dark:text-neutral-400 print:hidden">
+      <h1 class="mt-5 text-4xl font-extrabold text-neutral-900 dark:text-neutral">
+        {{ .Title | emojify }}
+      </h1>
+      <div class="mt-1 mb-2 text-base text-neutral-500 dark:text-neutral-400 print:hidden">
       {{ partial "article-meta/list.html" (dict "context" . "scope" "single") }}
     </div>
-    {{ $needsPageScript := or
-      (.Params.showViews | default (site.Params.list.showViews | default false))
-      (.Params.showLikes | default (site.Params.list.showLikes | default false))
-    }}
-    {{ if $needsPageScript }}
-      {{ $translations := .AllTranslations }}
-      {{ with .File }}
-        {{ $path := .Path }}
-        {{ range $translations }}
-          {{ $lang := print "." .Lang ".md" }}
-          {{ $path = replace $path $lang ".md" }}
-        {{ end }}
-        {{ $jsPage := resources.Get "js/page.js" }}
-        {{ $jsPage = $jsPage | resources.Minify | resources.Fingerprint (site.Params.fingerprintAlgorithm | default "sha512") }}
-        <script
-          type="text/javascript"
-          src="{{ $jsPage.RelPermalink }}"
-          integrity="{{ $jsPage.Data.Integrity }}"
-          data-oid="views_{{ $path }}"
-          data-oid-likes="likes_{{ $path }}"></script>
-      {{ end }}
-    {{ end }}
   </header>
 
   {{/* Description (markdown content) */}}
   {{ $tocMargin := cond $showToc "mt-12" "mt-0" }}
-  {{ $topClass := cond (hasPrefix site.Params.header.layout "fixed") "lg:top-[140px]" "lg:top-10" }}
-  <section class="{{ $tocMargin }} prose flex max-w-full flex-col dark:prose-invert lg:flex-row">
+  {{ $topClass := cond (or (hasPrefix site.Params.header.layout "fixed") (eq site.Params.header.layout "floating")) "lg:top-[140px]" "lg:top-10" }}
+  <section class="{{ $tocMargin }} prose flex max-w-full flex-col dark:prose-invert lg:flex-row mb-10">
     {{ if $showToc }}
-      <div class="order-first px-0 lg:order-last lg:max-w-xs lg:ps-8">
-        <div class="toc ps-5 lg:sticky {{ $topClass }}">
+      <div class="order-first lg:ms-auto px-0 lg:order-last lg:ps-8 lg:max-w-2xs">
+        <div class="toc ps-5 print:hidden lg:sticky {{ $topClass }}">
           {{ partial "toc.html" . }}
         </div>
       </div>
     {{ end }}
-    <div class="min-w-0 min-h-0 max-w-prose">
+    <div class="min-w-0 min-h-0 max-w-prose w-full">
       {{ partial "render-page-content.html" . }}
     </div>
   </section>
@@ -99,6 +79,7 @@
           {{ end }}
         {{ end }}
       </section>
+    {{/* else: is cardView */}}
     {{ else }}
       {{ if $groupByYear }}
         {{ range (.Paginate ($pages.GroupByDate "2006")).PageGroups }}
@@ -124,6 +105,8 @@
             </section>
           {{ end }}
         {{ end }}
+
+      {{/* else: not groupByYear */}}
       {{ else }}
         {{ if $cardViewScreenWidth }}
           <div class="relative w-screen max-w-[1600px] px-[30px] start-[calc(max(-50vw,-800px)+50%)]">
@@ -142,23 +125,24 @@
             </section>
           </div>
         {{ else }}
-            <section class="w-full grid gap-4 sm:grid-cols-2 md:grid-cols-3">
-              {{ if not $orderByWeight }}
+          <section class="w-full grid gap-4 sm:grid-cols-2 md:grid-cols-3">
+            {{ if not $orderByWeight }}
               {{ range (.Paginate ($pages.GroupByDate "2006")).PageGroups }}
                 {{ range .Pages }}
                   {{ partial "article-link/card.html" . }}
                 {{ end }}
               {{ end }}
-              {{ else }}
+            {{ else }}
               {{ range (.Paginate ($pages.ByWeight)).Pages }}
                 {{ partial "article-link/card.html" . }}
               {{ end }}
-              {{ end }}
+            {{ end }}
           </section>
-        {{ end }}
-      {{ end }}
-    {{ end }}
-  {{ else if not $hideChildPages }}
+        {{ end }}{{/* End of cardViewScreenWidth */}}
+      {{ end }}{{/* End of groupByYear */}}
+    {{ end }}{{/* End of cardView */}}
+  {{/* else: .Pages not greater to zero */}}
+  {{ else }}
     <section class="mt-10 prose dark:prose-invert">
       <p class="py-8 border-t">
         <em>{{ i18n "list.no_articles" | emojify }}</em>

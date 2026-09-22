@@ -25,5 +25,5 @@ keybase = "https://keybase.io/cameroncandau"
 [params.author]
 name = "Cameron Candau"
 bio = ""
-headline = "Infrastructure Security Engineer"
+headline = "Security Engineer"
 signingFingerprintFile = "/ssh-signing-fingerprints.txt"

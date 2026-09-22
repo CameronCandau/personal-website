@@ -40,7 +40,11 @@ showTaxonomies: false
   - Consolidating this content from separate site on https://veilcat.dev to main site on https://cameroncandau.com/ctf
 - 2026-07-24:
 	- Bought 2nd exam attempt and challenge lab extension
-	- Scheduled exam tentatively for 8/29/26
+	- Scheduled exam tentatively for 8/29/26 (later rescheduled to 2026-09-03)
+- 2026-09-03:
+	- Took 2nd exam attempt, submitted report on 2026-09-05
+- 2026-09-14:
+	- Received passing result via email
 
 # Summary of Preparation
 
